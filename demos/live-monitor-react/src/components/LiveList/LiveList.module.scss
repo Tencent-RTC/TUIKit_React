@@ -1,0 +1,200 @@
+.live-list-container {
+  display: grid;
+  gap: 8px;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  position: relative;
+  padding: 8px;
+  justify-content: start;
+  
+  scrollbar-width: none; // Firefox
+  -ms-overflow-style: none; // IE/Edge
+  
+  &::-webkit-scrollbar {
+    display: none; // Chrome/Safari
+  }
+
+  .live-list-item {
+    display: flex;
+    flex-direction: column;
+    border-radius: 16px;
+    padding: 8px;
+    overflow: hidden;
+
+
+    .live-view-mask {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 270px;
+      border-radius: 12px;
+      overflow: hidden;
+
+      .display-details,
+      .close-fullscreen,
+      .toggle-audio-button {
+        position: absolute;
+        color: var(--text-color-secondary);
+        font-size: 14px;
+        cursor: pointer;
+      }
+
+      .display-details {
+        display: none;
+        text-align: center;
+        line-height: 40px;
+        width: 120px;
+        height: 40px;
+        background-color: var(--text-color-secondary);
+        color: var(--stroke-color-module);
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: 12px;
+      }
+
+      .close-fullscreen {
+        top: 32px;
+        right: 32px;
+      }
+
+      .toggle-audio-button {
+        top: 32px;
+        right: 72px;
+      }
+
+      .live-view-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-repeat: repeat;
+        background-size: cover;
+        filter: blur(10px);
+      }
+
+      .live-id {
+        position: absolute;
+        left: 20px;
+        bottom: 8px;
+        font-size: 12px;
+        color: var(--text-color-button);
+      }
+    }
+
+    .live-view-mask:hover {
+      .display-details {
+        display: block;
+      }
+    }
+
+    .live-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      width: 100%;
+      height: 60px;
+      border-bottom: 1px solid var(--stroke-color-transparent);
+
+      .live-name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-weight: 500;
+        font-size: 16px;
+        color: var(--text-color-primary);
+      }
+
+      .live-owner {
+        display: flex;
+        align-items: center;
+        color: var(--text-color-secondary);
+        font-size: 14px;
+
+        .live-owner-name {
+          margin-left: 4px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
+    }
+
+    .operate-button {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      height: 40px;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      opacity: 0;
+      user-select: none;
+
+      .button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 50%;
+        height: 24px;
+        cursor: pointer;
+
+        .button-text {
+          text-wrap: nowrap;
+          margin: 0 4px;
+        }
+      }
+
+      .warn-button {
+        color: var(--text-color-warning);
+        border-right: 1px solid var(--stroke-color-secondary);
+        cursor: not-allowed;
+      }
+
+      .close-button {
+        color: var(--text-color-error);
+      }
+    }
+  }
+
+  .live-list-item:hover {
+    background-color: var(--bg-color-operate);
+
+    .operate-button {
+      opacity: 1;
+    }
+
+    .live-info {
+      border-bottom: 1px solid var(--stroke-color-secondary);
+    }
+  }
+}
+
+.live-list-empty {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: var(--text-color-secondary);
+
+  .icon-loading {
+    animation: spin 5s linear infinite;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}

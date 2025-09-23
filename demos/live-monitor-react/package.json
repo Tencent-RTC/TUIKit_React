@@ -1,0 +1,35 @@
+{
+  "name": "live-monitor-react",
+  "private": true,
+  "version": "3.4.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "publish:github": "node ./scripts/publish_github.js"
+  },
+  "dependencies": {
+    "@tencentcloud/uikit-base-component-react": "1.0.3",
+    "@tencentcloud/uikit-base-widget-react": "0.1.0",
+    "tuikit-atomicx-react": "3.4.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^7.8.2",
+    "zustand": "^5.0.8"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.21.0",
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
+    "@vitejs/plugin-react": "^4.3.4",
+    "eslint": "^9.21.0",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "eslint-plugin-react-refresh": "^0.4.19",
+    "globals": "^15.15.0",
+    "typescript": "~5.7.2",
+    "typescript-eslint": "^8.24.1",
+    "sass": "^1.90.0",
+    "vite": "^6.2.0",
+    "replace": "^1.2.1"
+  }
+}
