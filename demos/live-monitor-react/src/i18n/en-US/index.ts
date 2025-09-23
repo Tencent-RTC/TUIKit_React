@@ -1,0 +1,22 @@
+export const resource = {
+  RoomId: 'RoomId',
+  Warning: 'Warning',
+  'Force Close': 'Force Close',
+  Cancel: 'Cancel',
+  Confirm: 'Confirm',
+  Monitor: 'Monitor',
+  'Last Page': 'Last Page',
+  'Next Page': 'Next Page',
+  'First Page': 'First Page',
+  'Display details': 'Display details',
+  Logout: 'Logout',
+  'No Live right now': 'No Live right now',
+  'Whether to forcibly disband the live': 'Whether to forcibly disband the live',
+  'After being forcibly shut down, the live will be disbanded.':
+    'After being forcibly shut down, the live will be disbanded.',
+  'All Live Rooms': 'All Live Rooms',
+  Refresh: 'Refresh',
+  Notification: 'Notification',
+  'Login timeout. Please click "Confirm" to log in again': 'Login timeout. Please click "Confirm" to log in again',
+  'UserSig is illegal. Please click Confirm to log in again': 'UserSig is illegal. Please click Confirm to log in again',
+};
