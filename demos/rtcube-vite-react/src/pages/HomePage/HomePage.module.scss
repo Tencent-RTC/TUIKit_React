@@ -1,0 +1,83 @@
+@use '../../styles/mixins' as mixins;
+
+.home {
+  height: 100%;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  background: radial-gradient(1200px 600px at 20% 0%, rgba(79,142,247,0.18), transparent),
+              radial-gradient(900px 500px at 90% 10%, rgba(139,125,255,0.16), transparent),
+              linear-gradient(180deg, #0f1222 0%, #0a0c18 100%);
+  color: #e8ebff;
+
+  @include mixins.scrollbar-hidden();
+}
+
+.hero {
+  padding: 72px 24px 48px;
+  text-align: center;
+}
+
+.brand {
+  display: inline-block;
+  font-weight: 700;
+  letter-spacing: 2px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.headline { 
+  font-size: 44px; 
+  margin: 16px 0 8px; 
+}
+
+.sub { 
+  opacity: 0.8; 
+}
+
+.grid {
+  display: grid; 
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); 
+  gap: 20px;
+  padding: 24px; 
+  max-width: 1100px; 
+  margin: 0 auto 60px;
+}
+
+.card {
+  position: relative; 
+  padding: 20px; 
+  border-radius: 16px; 
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  transition: transform .25s ease, box-shadow .25s ease;
+  
+  &:hover { 
+    transform: translateY(-3px); 
+    box-shadow: 0 16px 42px rgba(0,0,0,0.35); 
+  }
+}
+
+.badge {
+  position: absolute; 
+  right: 18px; 
+  top: 18px; 
+  width: 12px; 
+  height: 12px; 
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.enter {
+  margin-top: 16px; 
+  padding: 8px 12px; 
+  border-radius: 10px; 
+  border: none; 
+  cursor: pointer;
+  color: #0b1224; 
+  font-weight: 600; 
+  background: linear-gradient(135deg, var(--accent), #6ee7b7);
+}

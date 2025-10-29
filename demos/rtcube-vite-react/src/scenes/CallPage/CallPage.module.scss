@@ -1,0 +1,313 @@
+@use "@tencentcloud/uikit-base-component-react/dist/styles/theme/util" as *;
+.callPage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  @include theme() {
+    background-color: get(bg-color-operate);
+    color: get(text-color-primary);
+  }
+}
+
+.callLobby {
+  padding: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.lobbyHeader {
+  text-align: center;
+  margin-bottom: 48px;
+
+  h2 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 12px;
+  }
+
+  p {
+    font-size: 18px;
+    color: #64748b;
+    margin: 0;
+  }
+}
+
+.callOptions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 32px;
+  margin-bottom: 64px;
+}
+
+.callOption {
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: 2px solid transparent;
+
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    border-color: #10b981;
+  }
+}
+
+.optionIcon {
+  font-size: 64px;
+  margin-bottom: 24px;
+  display: block;
+}
+
+.callOption h3 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #0f172a;
+  margin: 0 0 12px;
+}
+
+.callOption p {
+  font-size: 16px;
+  color: #64748b;
+  margin: 0 0 32px;
+  line-height: 1.6;
+}
+
+.startBtn {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 16px 32px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+  }
+}
+
+.features {
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+
+  h3 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #0f172a;
+    margin: 0 0 32px;
+    text-align: center;
+  }
+}
+
+.featureGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+}
+
+.feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.featureIcon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.feature h4 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #0f172a;
+  margin: 0 0 8px;
+}
+
+.feature p {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.5;
+}
+
+// 通话界面样式
+.callInterface {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #1e293b;
+  color: white;
+}
+
+.callHeader {
+  padding: 24px;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.2);
+
+  h2 {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0 0 8px;
+  }
+
+  p {
+    font-size: 16px;
+    opacity: 0.8;
+    margin: 0;
+  }
+}
+
+.callContent {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.videoContainer {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  aspect-ratio: 16/9;
+}
+
+.remoteVideo {
+  width: 100%;
+  height: 100%;
+  background: #374151;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.localVideo {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  width: 200px;
+  height: 150px;
+  background: #4b5563;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid white;
+}
+
+.videoPlaceholder {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.audioContainer {
+  text-align: center;
+}
+
+.audioAvatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  margin: 0 auto 24px;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.callControls {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  padding: 32px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.controlBtn {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+  }
+
+  &.endCall {
+    background: #ef4444;
+
+    &:hover {
+      background: #dc2626;
+    }
+  }
+}
+
+// 响应式设计
+@media (max-width: 768px) {
+  .callLobby {
+    padding: 24px 16px;
+  }
+
+  .lobbyHeader h2 {
+    font-size: 24px;
+  }
+
+  .callOptions {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .callOption {
+    padding: 32px 24px;
+  }
+
+  .featureGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .localVideo {
+    width: 120px;
+    height: 90px;
+    bottom: 10px;
+    right: 10px;
+  }
+
+  .callControls {
+    gap: 16px;
+    padding: 24px;
+  }
+
+  .controlBtn {
+    width: 56px;
+    height: 56px;
+    font-size: 20px;
+  }
+}

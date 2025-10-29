@@ -1,0 +1,53 @@
+@use "@tencentcloud/uikit-base-component-react/dist/styles/theme/util" as *;
+
+.chat-header {
+  &__right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-left: 10px;
+    outline: none;
+  }
+
+  &__button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 4px 6px;
+    border: none;
+    background: transparent;
+    transition: background-color 0.5s ease;
+    border-radius: 4px;
+
+    &:focus {
+      outline: none;
+    }
+
+    @include theme() {
+      &:hover {
+        background-color: get(button-color-secondary-hover);
+      }
+
+      &:active {
+        background-color: get(button-color-secondary-active);
+      }
+    }
+
+    &--disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      user-select: none;
+      pointer-events: none;
+    }
+  }
+
+  &__icon {
+    transition: color 0.2s ease;
+
+    @include theme() {
+      color: get(text-color-link);
+    }
+  }
+}
