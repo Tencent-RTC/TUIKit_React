@@ -1,0 +1,1 @@
+export { StagesPage } from './StagesPage';

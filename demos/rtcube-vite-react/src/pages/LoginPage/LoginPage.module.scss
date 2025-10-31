@@ -1,0 +1,295 @@
+@use "../../styles/mixins" as mixins;
+
+/**
+ * CSS Variables for consistent theming
+ */
+:root {
+  --login-bg-primary: #0f1222;
+  --login-bg-secondary: #0a0c18;
+  --login-text-primary: #e8ebff;
+  --login-text-secondary: #a8b3cf;
+  --login-accent: #4F8EF7;
+  --login-accent-light: #6aa6ff;
+  --login-border: rgba(255, 255, 255, 0.08);
+  --login-glass: rgba(255, 255, 255, 0.04);
+}
+
+/**
+ * Main login page container
+ */
+.login {
+  height: 100%;
+  background: linear-gradient(180deg, var(--login-bg-primary) 0%, var(--login-bg-secondary) 100%);
+  color: var(--login-text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/**
+ * Content container with responsive width
+ */
+.container {
+  width: 100%;
+  max-width: 90vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  animation: fadeIn 0.6s ease-out;
+
+  @include mixins.tablet {
+    max-width: 60vw;
+  }
+
+  @include mixins.desktop {
+    max-width: 440px;
+  }
+}
+
+/**
+ * Header section styles
+ */
+.header {
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.brand {
+  display: inline-block;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: var(--login-glass);
+  border: 1px solid var(--login-border);
+  margin-bottom: 24px;
+  font-size: 14px;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+  background: linear-gradient(135deg, var(--login-accent-light), var(--login-accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subtitle {
+  color: var(--login-text-secondary);
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+/**
+ * Form container with glass morphism effect
+ */
+.form {
+  width: 100%;
+  background: var(--login-glass);
+  border: 1px solid var(--login-border);
+  border-radius: 16px;
+  padding: 32px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+/**
+ * Form field wrapper
+ */
+.field {
+  margin-bottom: 20px;
+}
+
+.label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: var(--login-text-secondary);
+  font-size: 14px;
+}
+
+.input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--login-border);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--login-text-primary);
+  font-size: 15px;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+
+  &::placeholder {
+    color: rgba(168, 179, 207, 0.5);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--login-accent);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 0 3px rgba(79, 142, 247, 0.1);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+/**
+ * Terms agreement section
+ */
+.agreement {
+  margin-bottom: 24px;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: flex-start;
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--login-text-secondary);
+}
+
+.checkbox {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.checkmark {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  margin-right: 10px;
+  margin-top: 2px;
+  position: relative;
+  transition: all 0.2s ease;
+  background: rgba(255, 255, 255, 0.05);
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 5px;
+    height: 9px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: translate(-50%, -60%) rotate(45deg) scale(0);
+    transition: transform 0.2s ease;
+  }
+}
+
+.checkbox:checked + .checkmark {
+  background: linear-gradient(135deg, var(--login-accent-light), var(--login-accent));
+  border-color: var(--login-accent);
+
+  &::after {
+    transform: translate(-50%, -60%) rotate(45deg) scale(1);
+  }
+}
+
+.agreementText {
+  flex: 1;
+}
+
+.link {
+  color: var(--login-accent-light);
+  text-decoration: none;
+  margin: 0 4px;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: var(--login-accent);
+    text-decoration: underline;
+  }
+}
+
+/**
+ * Submit button with loading state
+ */
+.submitBtn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--login-accent-light), var(--login-accent));
+  color: white;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(79, 142, 247, 0.4);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/**
+ * Back button
+ */
+.backBtn {
+  padding: 12px 24px;
+  background: none;
+  border: none;
+  color: var(--login-text-secondary);
+  font-size: 14px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: var(--login-text-primary);
+  }
+}
+
+/**
+ * Animations
+ */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
