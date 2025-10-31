@@ -1,0 +1,386 @@
+@use "@tencentcloud/uikit-base-component-react/dist/styles/theme/util" as *;
+
+.LivePage {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  
+  @include theme() {
+    background-color: get(bg-color-operate);
+  }
+}
+
+.LivePage__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  
+  @include theme() {
+    background-color: get(bg-color-topbar);
+    border-bottom: 1px solid get(stroke-color-primary);
+  }
+  
+  h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    
+    @include theme() {
+      color: get(text-color-primary);
+    }
+  }
+}
+
+.LivePage__controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.LivePage__button {
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  @include theme() {
+    background-color: get(button-color-secondary-default);
+    color: get(text-color-primary);
+    
+    &:hover {
+      background-color: get(button-color-secondary-hover);
+    }
+    
+    &:active {
+      background-color: get(button-color-secondary-active);
+    }
+  }
+  
+  &--primary {
+    @include theme() {
+      background-color: get(button-color-primary-default);
+      color: get(text-color-button);
+      
+      &:hover {
+        background-color: get(button-color-primary-hover);
+      }
+      
+      &:active {
+        background-color: get(button-color-primary-active);
+      }
+    }
+  }
+  
+  &--danger {
+    @include theme() {
+      background-color: get(button-color-hangup-default);
+      color: get(text-color-button);
+      
+      &:hover {
+        background-color: get(button-color-hangup-hover);
+      }
+      
+      &:active {
+        background-color: get(button-color-hangup-active);
+      }
+      
+      &:disabled {
+        background-color: get(button-color-hangup-disabled);
+        color: get(text-color-button-disabled);
+      }
+    }
+  }
+}
+
+.LivePage__main {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+.LivePage__video {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  
+  @include theme() {
+    background-color: get(bg-color-default);
+  }
+}
+
+.LivePage__videoContainer {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  
+  video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+}
+
+.LivePage__videoPlaceholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  
+  @include theme() {
+    color: get(text-color-secondary);
+  }
+  
+  .icon {
+    font-size: 4rem;
+    opacity: 0.5;
+  }
+  
+  p {
+    margin: 0;
+    font-size: 1.1rem;
+  }
+}
+
+.LivePage__videoOverlay {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  right: 16px;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.LivePage__controlButton {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  @include theme() {
+    background-color: get(floating-color-default);
+    color: get(text-color-primary);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    
+    &:hover {
+      background-color: get(floating-color-operate);
+      transform: scale(1.05);
+    }
+  }
+  
+  &--active {
+    @include theme() {
+      background-color: get(button-color-on);
+      color: get(text-color-button);
+    }
+  }
+  
+  &--inactive {
+    @include theme() {
+      background-color: get(button-color-off);
+      color: get(text-color-button);
+    }
+  }
+}
+
+.LivePage__sidebar {
+  width: 320px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  
+  @include theme() {
+    background-color: get(bg-color-dialog);
+    border-left: 1px solid get(stroke-color-primary);
+  }
+}
+
+.LivePage__participants {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  
+  h3 {
+    margin: 0 0 16px 0;
+    font-size: 1rem;
+    font-weight: 600;
+    
+    @include theme() {
+      color: get(text-color-primary);
+    }
+  }
+  
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    @include theme() {
+      background: get(bg-color-dialog);
+    }
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    
+    @include theme() {
+      background: get(scroll-bar-color-default);
+      
+      &:hover {
+        background: get(scroll-bar-color-hover);
+      }
+    }
+  }
+}
+
+.LivePage__participant {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-bottom: 4px;
+  transition: all 0.2s ease;
+  
+  @include theme() {
+    &:hover {
+      background-color: get(list-color-hover);
+    }
+  }
+  
+  .avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    
+    @include theme() {
+      background-color: get(button-color-primary-default);
+    }
+  }
+  
+  .info {
+    flex: 1;
+    
+    .name {
+      font-weight: 500;
+      font-size: 0.9rem;
+      
+      @include theme() {
+        color: get(text-color-primary);
+      }
+    }
+    
+    .status {
+      font-size: 0.8rem;
+      
+      @include theme() {
+        color: get(text-color-secondary);
+      }
+    }
+  }
+}
+
+.LivePage__chat {
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  
+  @include theme() {
+    border-top: 1px solid get(stroke-color-primary);
+  }
+}
+
+.LivePage__chatMessages {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    @include theme() {
+      background: get(bg-color-dialog);
+    }
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    
+    @include theme() {
+      background: get(scroll-bar-color-default);
+      
+      &:hover {
+        background: get(scroll-bar-color-hover);
+      }
+    }
+  }
+}
+
+.LivePage__chatInput {
+  padding: 12px 16px;
+  display: flex;
+  gap: 8px;
+  
+  @include theme() {
+    border-top: 1px solid get(stroke-color-secondary);
+  }
+  
+  input {
+    flex: 1;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid;
+    font-size: 0.9rem;
+    
+    @include theme() {
+      background-color: get(bg-color-input);
+      border-color: get(stroke-color-secondary);
+      color: get(text-color-primary);
+      
+      &:focus {
+        outline: none;
+        border-color: get(button-color-primary-default);
+      }
+      
+      &::placeholder {
+        color: get(text-color-tertiary);
+      }
+    }
+  }
+  
+  button {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    
+    @include theme() {
+      background-color: get(button-color-primary-default);
+      color: get(text-color-button);
+      
+      &:hover {
+        background-color: get(button-color-primary-hover);
+      }
+    }
+  }
+}
