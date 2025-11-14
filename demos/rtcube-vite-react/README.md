@@ -2,6 +2,10 @@
 
 这是一个基于 `@tencentcloud/chat-uikit-react` 的演示项目，使用 Vite + React + TypeScript 构建。
 
+## 🚀 推荐：使用更高效的 AI 集成助手
+我们为您提供了全新的 AI 集成方式，如果您不需要完整的 Demo 工程, 只想快速开始集成，推荐您使用更高效的 AI 集成助手，只需要简单描述您的需求，即可自动生成集成代码，大幅提升开发效率。</br>
+[点击这里，立即体验 AI 集成](https://cloud.tencent.com/document/product/269/124481)
+
 ## 开发
 
 ```bash
