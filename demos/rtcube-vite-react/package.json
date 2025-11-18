@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tencentcloud/chat-uikit-react": "^3.4.5",
+    "@tencentcloud/chat-uikit-react": "^3.4.6",
     "@tencentcloud/uikit-base-component-react": "1.1.1",
     "@tencentcloud/uikit-base-widget-react": "^0.1.0",
     "@trtc/calls-uikit-react": "4.2.2",
