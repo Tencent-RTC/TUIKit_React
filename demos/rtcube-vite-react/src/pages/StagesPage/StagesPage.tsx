@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
-import { useLoginState, LoginStatus, useUIKit } from '@tencentcloud/chat-uikit-react';
+import { useUIKit } from '@tencentcloud/chat-uikit-react';
+import { useLoginState, LoginStatus } from 'tuikit-atomicx-react';
 import { Button } from '@tencentcloud/uikit-base-component-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Logo from '../../assets/RTCubeLogo.png';

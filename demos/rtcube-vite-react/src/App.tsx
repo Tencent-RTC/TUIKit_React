@@ -7,7 +7,7 @@ i18nInit();
 
 function App() {
   return (
-    <UIKitProvider language="zh-CN" theme="light">
+    <UIKitProvider language="zh-CN" theme="dark">
       <RouterProvider router={router} />
     </UIKitProvider>
   );

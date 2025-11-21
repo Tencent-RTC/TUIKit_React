@@ -30,7 +30,7 @@ export const SCENES: SceneConfig[] = [
     title: 'config.scenes.live.title',
     description: 'config.scenes.live.description',
     accent: '#F59E0B',
-    enabled: false,
+    enabled: true,
   },
   {
     key: 'room',
