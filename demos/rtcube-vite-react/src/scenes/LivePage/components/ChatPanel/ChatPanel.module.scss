@@ -1,0 +1,51 @@
+.chatPanel {
+  background: #1F2024;
+  border-radius: 18px;
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.panelHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+
+  h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+}
+
+.panelSubTitle {
+  font-size: 0.8rem;
+  color: rgba(248, 250, 252, 0.65);
+}
+
+.chatBody {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.chatPlaceholder {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(148, 163, 184, 0.9);
+  font-size: 0.9rem;
+}
+
+.chatInput {
+  margin-top: 16px;
+
+  :global(.barrageInput) {
+    width: 100%;
+  }
+}
+

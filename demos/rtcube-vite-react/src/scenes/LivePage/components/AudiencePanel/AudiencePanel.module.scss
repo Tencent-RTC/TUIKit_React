@@ -1,0 +1,92 @@
+.audiencePanel {
+  background: rgba(10, 12, 24, 0.98);
+  border-radius: 18px;
+  padding: 18px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  box-shadow: 0 18px 36px rgba(5, 7, 18, 0.5);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.panelHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+
+  h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+}
+
+.panelSubTitle {
+  font-size: 0.8rem;
+  color: rgba(248, 250, 252, 0.65);
+}
+
+.audienceList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 6px;
+  min-height: 0;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+}
+
+.audienceItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: rgba(14, 16, 28, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.audienceAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(120deg, #5b61ff, #ff7ad6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+}
+
+.audienceMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.audienceName {
+  font-size: 0.9rem;
+}
+
+.audienceBadge {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  font-size: 0.7rem;
+  letter-spacing: 0.02em;
+}
+
+.panelPlaceholder {
+  padding: 16px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: rgba(148, 163, 184, 0.8);
+}
+

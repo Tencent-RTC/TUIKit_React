@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { useLoginState, useUIKit } from '@tencentcloud/chat-uikit-react';
+import { useUIKit } from '@tencentcloud/chat-uikit-react';
+import { useLoginState } from 'tuikit-atomicx-react';
 import { Toast } from '@tencentcloud/uikit-base-component-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { genTestUserSig } from '@/debug';

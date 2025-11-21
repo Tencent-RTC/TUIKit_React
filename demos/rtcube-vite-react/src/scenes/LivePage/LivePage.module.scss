@@ -2,385 +2,405 @@
 
 .LivePage {
   width: 100%;
-  height: 100%;
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  
-  @include theme() {
-    background-color: get(bg-color-operate);
-  }
+  background: #131417;
+  color: #f6f8ff;
 }
 
 .LivePage__header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 24px;
-  
-  @include theme() {
-    background-color: get(bg-color-topbar);
-    border-bottom: 1px solid get(stroke-color-primary);
-  }
-  
-  h2 {
-    margin: 0;
-    font-size: 1.25rem;
-    font-weight: 600;
-    
-    @include theme() {
-      color: get(text-color-primary);
-    }
-  }
+  padding: 24px 36px 18px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.LivePage__brand {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: #f3f6ff;
+  font-weight: 600;
+  font-size: 1.35rem;
+}
+
+.LivePage__brandTagline {
+  font-size: 0.85rem;
+  color: rgba(243, 246, 255, 0.7);
 }
 
 .LivePage__controls {
   display: flex;
-  gap: 12px;
+  gap: 14px;
   align-items: center;
 }
 
-.LivePage__button {
-  padding: 8px 16px;
-  border-radius: 6px;
+.LivePage__buttonPrimary {
+  min-width: 120px;
+  border-radius: 999px;
+  background: linear-gradient(140deg, #3f8cff, #9353ff);
   border: none;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  
-  @include theme() {
-    background-color: get(button-color-secondary-default);
-    color: get(text-color-primary);
-    
-    &:hover {
-      background-color: get(button-color-secondary-hover);
-    }
-    
-    &:active {
-      background-color: get(button-color-secondary-active);
-    }
+  box-shadow: 0 12px 30px rgba(110, 136, 255, 0.35);
+  color: #fff;
+
+  &:disabled {
+    box-shadow: none;
+    background: rgba(148, 163, 184, 0.4);
   }
-  
-  &--primary {
-    @include theme() {
-      background-color: get(button-color-primary-default);
-      color: get(text-color-button);
-      
-      &:hover {
-        background-color: get(button-color-primary-hover);
-      }
-      
-      &:active {
-        background-color: get(button-color-primary-active);
-      }
-    }
+}
+
+.LivePage__buttonGhost {
+  min-width: 90px;
+  border-radius: 999px;
+  color: #cbd5f5;
+}
+
+.LivePage__roomInput {
+  width: 240px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  font-size: 0.95rem;
+  background: rgba(8, 9, 15, 0.8);
+  color: #f8fafc;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &::placeholder {
+    color: rgba(203, 213, 225, 0.6);
   }
-  
-  &--danger {
-    @include theme() {
-      background-color: get(button-color-hangup-default);
-      color: get(text-color-button);
-      
-      &:hover {
-        background-color: get(button-color-hangup-hover);
-      }
-      
-      &:active {
-        background-color: get(button-color-hangup-active);
-      }
-      
-      &:disabled {
-        background-color: get(button-color-hangup-disabled);
-        color: get(text-color-button-disabled);
-      }
-    }
+
+  &:focus {
+    outline: none;
+    border-color: rgba(94, 194, 255, 0.6);
+    box-shadow: 0 0 0 4px rgba(94, 194, 255, 0.2);
   }
 }
 
 .LivePage__main {
   flex: 1;
   display: flex;
+  gap: 6px;
+  padding: 0 16px 16px;
+  align-items: stretch;
+  min-height: 0;
   overflow: hidden;
 }
 
-.LivePage__video {
+.LivePage__content {
   flex: 1;
   display: flex;
   flex-direction: column;
-  position: relative;
-  
+  overflow: hidden;
+  margin-left: 16px;
+  background: rgba(8, 10, 22, 0.96);
+  border-radius: 20px;
+}
+
+.LivePage__stageHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 24px;
+  height: 64px;
   @include theme() {
-    background-color: get(bg-color-default);
+    background-color: get(bg-color-operate);
   }
 }
 
-.LivePage__videoContainer {
-  flex: 1;
+.LivePage__stageAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #7643ff, #ff79b0);
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
-  
-  video {
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+
+  img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 8px;
   }
 }
 
-.LivePage__videoPlaceholder {
+.LivePage__stageHost {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.LivePage__stageHostName {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #f6f7ff;
+}
+
+.LivePage__stageHostMeta {
+  font-size: 0.85rem;
+  color: rgba(248, 250, 252, 0.7);
+}
+
+.LivePage__stageBody {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.LivePage__gift {
+  width: 100%;
+  height: 140px;
+  flex-shrink: 0;
+}
+
+.LivePage__stageCanvas {
+  flex: 1;
+  position: relative;
+  border-radius: 18px 18px 0 0;
+  overflow: hidden;
+  min-height: 320px;
+  min-width: 0;
+  aspect-ratio: 16 / 9;
+
+  :global(video) {
+    object-fit: contain !important;
+  }
+}
+
+.LivePage__stageContent {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  overflow: hidden;
+
+  :global(video) {
+    object-fit: contain !important;
+  }
+}
+
+.LivePage__stagePlaceholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: center;
+  padding: 24px;
+  color: rgba(226, 232, 240, 0.85);
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.03), transparent 75%);
+}
+
+.LivePage__loadingOverlay {
+  position: absolute;
+  inset: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 16px;
-  
-  @include theme() {
-    color: get(text-color-secondary);
-  }
-  
-  .icon {
-    font-size: 4rem;
-    opacity: 0.5;
-  }
-  
-  p {
-    margin: 0;
-    font-size: 1.1rem;
-  }
-}
-
-.LivePage__videoOverlay {
-  position: absolute;
-  bottom: 16px;
-  left: 16px;
-  right: 16px;
-  display: flex;
-  justify-content: center;
   gap: 12px;
+  background: rgba(3, 6, 12, 0.55);
+  backdrop-filter: blur(4px);
+  color: rgba(248, 250, 252, 0.9);
+  font-size: 0.95rem;
 }
 
-.LivePage__controlButton {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.2rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  
-  @include theme() {
-    background-color: get(floating-color-default);
-    color: get(text-color-primary);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    
-    &:hover {
-      background-color: get(floating-color-operate);
-      transform: scale(1.05);
-    }
+.LivePage__loadingIcon {
+  width: 36px;
+  height: 36px;
+  animation: livePageSpin 1.8s linear infinite;
+}
+
+@keyframes livePageSpin {
+  from {
+    transform: rotate(0deg);
   }
-  
-  &--active {
-    @include theme() {
-      background-color: get(button-color-on);
-      color: get(text-color-button);
-    }
-  }
-  
-  &--inactive {
-    @include theme() {
-      background-color: get(button-color-off);
-      color: get(text-color-button);
-    }
+
+  to {
+    transform: rotate(360deg);
   }
 }
 
 .LivePage__sidebar {
-  width: 320px;
-  flex-shrink: 0;
+  width: 22%;
+  min-width: 240px;
+  max-width: 360px;
   display: flex;
   flex-direction: column;
-  
-  @include theme() {
-    background-color: get(bg-color-dialog);
-    border-left: 1px solid get(stroke-color-primary);
-  }
+  gap: 12px;
+  margin-right: 16px;
 }
 
-.LivePage__participants {
+.LivePage__audiencePanelWrapper {
+  height: 40%;
+}
+
+.LivePage__chatPanelWrapper {
   flex: 1;
-  padding: 16px;
-  overflow-y: auto;
-  
+  display: flex;
+}
+
+.LivePage__panel {
+  background: rgba(10, 12, 24, 0.98);
+  border-radius: 18px;
+  padding: 18px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  box-shadow: 0 18px 36px rgba(5, 7, 18, 0.5);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.LivePage__audiencePanel {
+  height: 40%;
+}
+
+.LivePage__chatPanel {
+  flex: 1;
+}
+
+.LivePage__panelHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+
   h3 {
-    margin: 0 0 16px 0;
+    margin: 0;
     font-size: 1rem;
     font-weight: 600;
-    
-    @include theme() {
-      color: get(text-color-primary);
-    }
-  }
-  
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
-  
-  &::-webkit-scrollbar-track {
-    @include theme() {
-      background: get(bg-color-dialog);
-    }
-  }
-  
-  &::-webkit-scrollbar-thumb {
-    border-radius: 3px;
-    
-    @include theme() {
-      background: get(scroll-bar-color-default);
-      
-      &:hover {
-        background: get(scroll-bar-color-hover);
-      }
-    }
   }
 }
 
-.LivePage__participant {
+.LivePage__panelSubTitle {
+  font-size: 0.8rem;
+  color: rgba(248, 250, 252, 0.65);
+}
+
+.LivePage__audienceList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 6px;
+  min-height: 0;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+}
+
+.LivePage__audienceItem {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 8px 12px;
-  border-radius: 6px;
-  margin-bottom: 4px;
-  transition: all 0.2s ease;
-  
-  @include theme() {
-    &:hover {
-      background-color: get(list-color-hover);
-    }
-  }
-  
-  .avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    
-    @include theme() {
-      background-color: get(button-color-primary-default);
-    }
-  }
-  
-  .info {
-    flex: 1;
-    
-    .name {
-      font-weight: 500;
-      font-size: 0.9rem;
-      
-      @include theme() {
-        color: get(text-color-primary);
-      }
-    }
-    
-    .status {
-      font-size: 0.8rem;
-      
-      @include theme() {
-        color: get(text-color-secondary);
-      }
-    }
-  }
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: rgba(14, 16, 28, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.02);
 }
 
-.LivePage__chat {
-  height: 300px;
+.LivePage__audienceAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(120deg, #5b61ff, #ff7ad6);
   display: flex;
-  flex-direction: column;
-  
-  @include theme() {
-    border-top: 1px solid get(stroke-color-primary);
-  }
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
 }
 
-.LivePage__chatMessages {
-  flex: 1;
+.LivePage__audienceMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.LivePage__audienceName {
+  font-size: 0.9rem;
+}
+
+.LivePage__audienceBadge {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  font-size: 0.7rem;
+  letter-spacing: 0.02em;
+}
+
+.LivePage__panelPlaceholder {
   padding: 16px;
-  overflow-y: auto;
-  
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
-  
-  &::-webkit-scrollbar-track {
-    @include theme() {
-      background: get(bg-color-dialog);
-    }
-  }
-  
-  &::-webkit-scrollbar-thumb {
-    border-radius: 3px;
-    
-    @include theme() {
-      background: get(scroll-bar-color-default);
-      
-      &:hover {
-        background: get(scroll-bar-color-hover);
-      }
-    }
-  }
+  text-align: center;
+  font-size: 0.85rem;
+  color: rgba(148, 163, 184, 0.8);
+}
+
+.LivePage__chatBody {
+  flex: 1;
+  min-height: 0;
+  border-radius: 16px;
+  background: rgba(8, 9, 18, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.02);
+  padding: 8px;
+  display: flex;
+}
+
+.LivePage__chatBody :global(.barrageList) {
+  flex: 1;
+  height: 100%;
+  min-height: 0;
+  background: transparent;
+}
+
+.LivePage__chatPlaceholder {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(148, 163, 184, 0.9);
+  font-size: 0.9rem;
 }
 
 .LivePage__chatInput {
-  padding: 12px 16px;
-  display: flex;
-  gap: 8px;
-  
-  @include theme() {
-    border-top: 1px solid get(stroke-color-secondary);
+  margin-top: 16px;
+
+  :global(.barrageInput) {
+    width: 100%;
   }
-  
-  input {
-    flex: 1;
-    padding: 8px 12px;
-    border-radius: 6px;
-    border: 1px solid;
-    font-size: 0.9rem;
-    
-    @include theme() {
-      background-color: get(bg-color-input);
-      border-color: get(stroke-color-secondary);
-      color: get(text-color-primary);
-      
-      &:focus {
-        outline: none;
-        border-color: get(button-color-primary-default);
-      }
-      
-      &::placeholder {
-        color: get(text-color-tertiary);
-      }
-    }
-  }
-  
-  button {
-    padding: 8px 12px;
-    border-radius: 6px;
-    border: none;
-    font-size: 0.9rem;
-    font-weight: 500;
-    cursor: pointer;
-    
-    @include theme() {
-      background-color: get(button-color-primary-default);
-      color: get(text-color-button);
-      
-      &:hover {
-        background-color: get(button-color-primary-hover);
-      }
-    }
-  }
+}
+
+:global(#video-player) {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  overflow: hidden;
+}
+
+:global(#video-player > *) {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
 }

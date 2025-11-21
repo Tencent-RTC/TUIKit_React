@@ -1,241 +1,174 @@
-import React from 'react';
-import { useLoginState, LoginStatus, useUIKit } from '@tencentcloud/chat-uikit-react';
+import { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { useUIKit } from '@tencentcloud/chat-uikit-react';
+import { Toast, Button, IconLoading } from '@tencentcloud/uikit-base-component-react';
+import {
+  useLiveListState,
+  useRoomEngine,
+  useLoginState,
+  LoginStatus,
+  LiveView,
+  LiveGift
+} from 'tuikit-atomicx-react';
+import { AudiencePanel } from './components/AudiencePanel/AudiencePanel';
+import { ChatPanel } from './components/ChatPanel/ChatPanel';
 import styles from './LivePage.module.scss';
 
+const audienceMockList = [
+  { id: 'viewer-1', name: 'Nightbot', badge: 'MOD' },
+  { id: 'viewer-2', name: 'Sperkfun4', badge: 'VIP' },
+  { id: 'viewer-3', name: 'Johntraz', badge: '' },
+  { id: 'viewer-4', name: 'Ghost_Beretita', badge: 'SUB' },
+  { id: 'viewer-5', name: 'EliDaposs', badge: '' },
+  { id: 'viewer-6', name: 'Spectral_0', badge: 'VIP' },
+];
+
 function LivePage() {
-  const { status, loginUserInfo } = useLoginState();
+  const [searchParams] = useSearchParams();
+  const { status } = useLoginState();
   const { t } = useUIKit();
+  const { currentLive, joinLive, leaveLive } = useLiveListState();
+  const roomEngine = useRoomEngine();
+  const liveIdFromQuery = searchParams.get('liveId')?.trim() ?? '';
+  const [roomId, setRoomId] = useState(liveIdFromQuery);
+  const [isJoinLoading, setIsJoinLoading] = useState(false);
+  useEffect(() => {
+    setRoomId(liveIdFromQuery);
+  }, [liveIdFromQuery]);
+
+  const handleJoinLive = async () => {
+    if (status !== LoginStatus.SUCCESS) {
+      console.warn('[LivePage] please login before joining live');
+      return;
+    }
+    if (!roomId) {
+      console.warn('[LivePage] room id is required');
+      return;
+    }
+    if (!roomEngine.instance) {
+      console.warn('[LivePage] room engine not ready');
+      return;
+    }
+
+    try {
+      setIsJoinLoading(true);
+      await joinLive({ liveId: roomId.trim() });
+      console.log('[LivePage] joinLive success', roomId.trim());
+      Toast.success({ message: t('scene.live.joinLiveSuccess') });
+    } catch (error) {
+      Toast.error({ message: `${t('scene.live.joinLiveFailed')}. error: ${error}` });
+    } finally {
+      setIsJoinLoading(false);
+    }
+  };
+
+  const handleLeaveLive = async () => {
+    if (!roomEngine.instance) {
+      return;
+    }
+    try {
+      await leaveLive();
+      Toast.success({ message: t('scene.live.leaveLiveSuccess') });
+    } catch (error) {
+      Toast.error({ message: `${t('scene.live.leaveLiveFailed')}. error: ${error}` });
+    }
+  };
+
+  const showLive = Boolean(currentLive?.liveId);
+  const audienceCount = currentLive?.currentViewerCount ?? audienceMockList.length;
+  const audienceList = useMemo(() => audienceMockList, []);
+
+  const hostName =
+    currentLive?.liveOwner.userName || currentLive?.liveOwner.userId || t('scene.live.hostLabel');
+  const hostAvatar = currentLive?.liveOwner.avatarUrl;
 
   return (
     <div className={styles.LivePage}>
       <div className={styles.LivePage__header}>
-        <h2>{t('scene.live.title')}</h2>
+        <div className={styles.LivePage__brand}>
+          <span>LiveSuite</span>
+          <div className={styles.LivePage__brandTagline}>{t('scene.live.title')}</div>
+        </div>
         <div className={styles.LivePage__controls}>
-          <button className={`${styles.LivePage__button} ${styles['LivePage__button--primary']}`}>
-            {t('scene.live.startLive')}
-          </button>
-          <button className={styles.LivePage__button}>
-            {t('scene.live.settings')}
-          </button>
+          <input
+            className={styles.LivePage__roomInput}
+            value={roomId}
+            onChange={event => setRoomId(event.target.value)}
+            placeholder={t('scene.live.roomPlaceholder')}
+          />
+          <Button
+            className={styles.LivePage__buttonPrimary}
+            onClick={handleJoinLive}
+            disabled={isJoinLoading || Boolean(currentLive?.liveId)}
+            type="primary"
+            loading={isJoinLoading}
+          >
+            {t('scene.live.joinLive')}
+          </Button>
+          <Button
+            className={styles.LivePage__buttonGhost}
+            onClick={handleLeaveLive}
+            disabled={!currentLive?.liveId}
+            type="text"
+          >
+            {t('scene.live.leaveLive')}
+          </Button>
         </div>
       </div>
 
-      <div style={{
-        backgroundColor: 'white',
-        padding: '30px',
-        borderRadius: '12px',
-        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-        marginBottom: '30px',
-      }}
-      >
-        <h2 style={{ marginBottom: '20px', color: '#333' }}>{t('scene.live.room')}</h2>
-
-        {status === LoginStatus.SUCCESS
-          ? (
-            <div>
-              <p style={{ color: '#666', marginBottom: '20px' }}>
-                {t('scene.live.welcome')}
-                {' '}
-                {loginUserInfo?.userId || '用户'}
-                ！{t('scene.live.welcomeMessage')}
-              </p>
-
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-                gap: '20px',
-                marginBottom: '30px',
-              }}
-              >
-                <div style={{
-                  padding: '20px',
-                  backgroundColor: '#f8f9fa',
-                  borderRadius: '8px',
-                  border: '1px solid #e9ecef',
-                }}
-                >
-                  <h3 style={{ marginBottom: '15px', color: '#333' }}>{t('scene.live.startLive.title')}</h3>
-                  <p style={{ color: '#666', marginBottom: '15px' }}>
-                    {t('scene.live.startLive.description')}
-                  </p>
-                  <button style={{
-                    padding: '10px 20px',
-                    backgroundColor: '#dc3545',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '6px',
-                    cursor: 'pointer',
-                    fontSize: '14px',
-                  }}
-                  >
-                    {t('scene.live.startLive.button')}
-                  </button>
+      <main className={styles.LivePage__main}>
+        <div className={styles.LivePage__content}>
+          <div className={styles.LivePage__stageHeader}>
+            <div className={styles.LivePage__stageAvatar}>
+              {hostAvatar ? <img src={hostAvatar} alt={hostName} /> : hostName?.charAt(0) ?? 'H'}
+            </div>
+            <div className={styles.LivePage__stageHost}>
+              <span className={styles.LivePage__stageHostName}>{hostName}</span>
+              <span className={styles.LivePage__stageHostMeta}>
+                {showLive ? `${t('scene.live.roomIdLabel')}: ${currentLive?.liveId ?? ''}` : t('scene.live.noLive')}
+              </span>
+            </div>
+          </div>
+          <div className={styles.LivePage__stageBody}>
+            <div className={styles.LivePage__stageCanvas}>
+              {showLive ? (
+                <div className={styles.LivePage__stageContent}>
+                  <LiveView />
                 </div>
-
-                <div style={{
-                  padding: '20px',
-                  backgroundColor: '#f8f9fa',
-                  borderRadius: '8px',
-                  border: '1px solid #e9ecef',
-                }}
-                >
-                  <h3 style={{ marginBottom: '15px', color: '#333' }}>{t('scene.live.watchLive.title')}</h3>
-                  <p style={{ color: '#666', marginBottom: '15px' }}>
-                    {t('scene.live.watchLive.description')}
-                  </p>
-                  <button style={{
-                    padding: '10px 20px',
-                    backgroundColor: '#007bff',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '6px',
-                    cursor: 'pointer',
-                    fontSize: '14px',
-                  }}
-                  >
-                    {t('scene.live.watchLive.button')}
-                  </button>
+              ) : (
+                <div className={styles.LivePage__stagePlaceholder}>{t('scene.live.noLive')}</div>
+              )}
+              {isJoinLoading && (
+                <div className={styles.LivePage__loadingOverlay}>
+                  <IconLoading className={styles.LivePage__loadingIcon} />
+                  <span>{t('scene.live.joinLiveLoading')}</span>
                 </div>
+              )}
+            </div>
+            {currentLive?.liveId && (
+              <div className={styles.LivePage__gift}>
+                <LiveGift />
               </div>
-
-              {/* 直播列表 */}
-              <div>
-                <h3 style={{ marginBottom: '20px', color: '#333' }}>{t('scene.live.hotLive')}</h3>
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
-                  gap: '15px',
-                }}
-                >
-                  {[
-                    { title: '技术分享直播', host: '开发者小王', viewers: 128, status: 'live' },
-                    { title: '游戏实况', host: '游戏达人', viewers: 256, status: 'live' },
-                    { title: '音乐演奏', host: '音乐人', viewers: 89, status: 'live' },
-                  ].map((live, index) => (
-                    <div
-                      key={index}
-                      style={{
-                        padding: '15px',
-                        backgroundColor: '#fff',
-                        border: '1px solid #e9ecef',
-                        borderRadius: '8px',
-                        cursor: 'pointer',
-                        transition: 'transform 0.2s, box-shadow 0.2s',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = 'translateY(-2px)';
-                        e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.15)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = 'translateY(0)';
-                        e.currentTarget.style.boxShadow = 'none';
-                      }}
-                    >
-                      <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        marginBottom: '10px',
-                      }}
-                      >
-                        <span style={{
-                          backgroundColor: '#dc3545',
-                          color: 'white',
-                          padding: '2px 8px',
-                          borderRadius: '12px',
-                          fontSize: '12px',
-                        }}
-                        >
-                          {t('scene.live.live')}
-                        </span>
-                        <span style={{ fontSize: '12px', color: '#666' }}>
-                          👥
-                          {' '}
-                          {live.viewers}
-                        </span>
-                      </div>
-                      <h4 style={{ margin: '0 0 8px 0', color: '#333' }}>{live.title}</h4>
-                      <p style={{ margin: 0, fontSize: '14px', color: '#666' }}>
-                        {t('scene.live.host')}
-                        {' '}
-                        {live.host}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )
-          : (
-            <div style={{
-              textAlign: 'center',
-              padding: '40px',
-              color: '#666',
-            }}
-            >
-              <h3 style={{ marginBottom: '15px' }}>{t('scene.live.pleaseLogin')}</h3>
-              <p style={{ marginBottom: '20px' }}>
-                {t('scene.live.loginMessage')}
-              </p>
-              <button
-                onClick={() => {
-                  window.location.href = '/login';
-                }}
-                style={{
-                  padding: '12px 24px',
-                  backgroundColor: '#007bff',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '6px',
-                  cursor: 'pointer',
-                  fontSize: '16px',
-                }}
-              >
-                {t('scene.live.loginButton')}
-              </button>
-            </div>
-          )}
-      </div>
-
-      {/* 功能介绍 */}
-      <div style={{
-        backgroundColor: 'white',
-        padding: '30px',
-        borderRadius: '12px',
-        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-      }}
-      >
-        <h2 style={{ marginBottom: '20px', color: '#333' }}>{t('scene.live.features.title')}</h2>
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-          gap: '20px',
-        }}
-        >
-          {[
-            t('scene.live.features.hdVideo'),
-            t('scene.live.features.realtimeAudio'),
-            t('scene.live.features.barrage'),
-            t('scene.live.features.multiGuest'),
-            t('scene.live.features.gifts'),
-            t('scene.live.features.mobile'),
-            t('scene.live.features.privacy'),
-            t('scene.live.features.statistics'),
-          ].map((feature, index) => (
-            <div
-              key={index}
-              style={{
-                padding: '15px',
-                backgroundColor: '#f8f9fa',
-                borderRadius: '8px',
-                fontSize: '14px',
-              }}
-            >
-              {feature}
-            </div>
-          ))}
+            )}
+          </div>
         </div>
-      </div>
+
+        <aside className={styles.LivePage__sidebar}>
+          <AudiencePanel
+            className={`${styles.LivePage__audiencePanelWrapper}`}
+            title={t('scene.live.audienceTitle')}
+            subtitle={t('scene.live.audienceSubtitle', { count: audienceCount })}
+            audienceList={audienceList}
+            emptyText={t('scene.live.audiencePlaceholder')}
+          />
+          <ChatPanel
+            className={styles.LivePage__chatPanelWrapper}
+            title={t('scene.live.barrageTitle')}
+            isLive={showLive}
+            emptyText={t('barrage_list.empty')}
+          />
+        </aside>
+      </main>
     </div>
   );
 }
