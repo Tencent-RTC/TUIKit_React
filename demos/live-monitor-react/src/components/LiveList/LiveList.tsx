@@ -65,7 +65,7 @@ interface LiveListProps {
 }
 
 const LiveList: React.FC<LiveListProps> = ({ monitorLiveInfoList, className }) => {
-  const { hasMoreData } = usePaginationState();
+  const { isLoading, hasMoreData } = usePaginationState();
   const { t } = useUIKit();
   const { closeRoom, stopPlay, muteLiveAudio } = useLiveMonitorState();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -153,13 +153,17 @@ const LiveList: React.FC<LiveListProps> = ({ monitorLiveInfoList, className }) =
     };
   }, [onFullscreenChange]);
 
-  if (monitorLiveInfoList.length === 0 && hasMoreData) {
+  // Show loading state when fetching data or starting playback
+  if (isLoading) {
     return (
       <div className={styles['live-list-empty']}>
         <IconLoading size='52' className={styles['icon-loading']} />
       </div>
     );
-  } else if (!hasMoreData) {
+  }
+
+  // Show empty state when there's no live data
+  if (monitorLiveInfoList.length === 0 && !hasMoreData) {
     return (
       <div className={styles['live-list-empty']}>
         <IconEmpty size='126' />
@@ -187,7 +191,7 @@ const LiveList: React.FC<LiveListProps> = ({ monitorLiveInfoList, className }) =
         >
           <div className={styles['live-view-mask']} id={item.liveId}>
             <div
-              className={styles['live-view-background']}
+              className={`${styles['live-view-background']} ${item.coverUrl ? '' : styles['live-view-cover-background']}`}
               style={{
                 backgroundImage: `url(${item.backgroundUrl || item.coverUrl || defaultCoverUrl})`,
               }}

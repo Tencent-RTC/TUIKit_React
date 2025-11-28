@@ -13,6 +13,7 @@ export interface PaginationState {
   currentPage: number;
   hasMoreData: boolean;
   currentPageData: MonitorLiveInfo[];
+  isLoading: boolean;
 }
 
 export interface PaginationInnerState {
@@ -21,18 +22,23 @@ export interface PaginationInnerState {
 
 export interface PaginationActions {
   setCurrentPage: (page: number) => void;
-  setHasMoreData: (hasMore: boolean) => void;
   setCurrentPageData: (data: MonitorLiveInfo[]) => void;
   setPageSize: (size: number) => void;
   getCurrentPageData: () => MonitorLiveInfo[];
 }
 
-const paginationStore = createStore<PaginationState & PaginationInnerState & PaginationActions>()((set, get) => ({
+interface PaginationInnerActions {
+  setIsLoading: (loading: boolean) => void;
+  setHasMoreData: (hasMore: boolean) => void;
+}
+
+const paginationStore = createStore<PaginationState & PaginationInnerState & PaginationActions & PaginationInnerActions>()((set, get) => ({
   // State
   currentPage: 1,
   pageSize: 10,
   hasMoreData: true,
   currentPageData: [],
+  isLoading: false,
 
   // Actions
   setCurrentPage: (page: number) => {
@@ -51,6 +57,10 @@ const paginationStore = createStore<PaginationState & PaginationInnerState & Pag
     set({ pageSize: size });
   },
 
+  setIsLoading: (loading: boolean) => {
+    set({ isLoading: loading });
+  },
+
   getCurrentPageData: () => {
     return get().currentPageData;
   },
@@ -64,9 +74,11 @@ export function usePaginationState(options?: PaginationProps) {
   const currentPage = useStore(paginationStore, state => state.currentPage);
   const hasMoreData = useStore(paginationStore, state => state.hasMoreData);
   const currentPageData = useStore(paginationStore, state => state.currentPageData);
+  const isLoading = useStore(paginationStore, state => state.isLoading);
   const setCurrentPage = useStore(paginationStore, state => state.setCurrentPage);
   const setHasMoreData = useStore(paginationStore, state => state.setHasMoreData);
   const setCurrentPageData = useStore(paginationStore, state => state.setCurrentPageData);
+  const setIsLoading = useStore(paginationStore, state => state.setIsLoading);
   const setPageSize = useStore(paginationStore, state => state.setPageSize);
   const getCurrentPageData = useStore(paginationStore, state => state.getCurrentPageData);
 
@@ -75,6 +87,9 @@ export function usePaginationState(options?: PaginationProps) {
     if (page > currentPage && !hasMoreData) return;
 
     try {
+      // Set loading state
+      setIsLoading(true);
+
       // Stop current page live streams
       currentPageData.forEach((item: MonitorLiveInfo) => {
         stopPlay(item.liveId);
@@ -83,12 +98,36 @@ export function usePaginationState(options?: PaginationProps) {
       // Load new page data - get fresh pageSize from store
       const currentPageSize = paginationStore.getState().pageSize;
       const newPageData = await getLiveList(page, currentPageSize);
-      const hasMore = newPageData.length >= currentPageSize;
 
+      // Update state
+      setCurrentPage(page);
+      setCurrentPageData(newPageData);
+
+      // Call page change callback early
+      options?.onPageChange?.(page);
+
+      // Update hasMoreData based on data length
+      if (newPageData.length === 0) {
+        setHasMoreData(false);
+        setIsLoading(false);
+        return;
+      }
+      
+      // Only when returned data equals pageSize, there might be more data
+      const hasMore = newPageData.length === currentPageSize;
+      setHasMoreData(hasMore);
+
+      // Wait for React to render DOM elements
+      await new Promise<void>(resolve => {
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => resolve());
+        });
+      });
+
+      // Start playing
       let hasNavigatedToLogin = false;
       for (const item of newPageData) {
         startPlay(item.liveId, `live_monitor_view_${item.liveId}`).catch((error: any) => {
-          // if (error === ErrorCode.LOGIN_TIMEOUT && !hasNavigatedToLogin) {
           if ((error === ErrorCode.LOGIN_TIMEOUT || error === ErrorCode.USER_SIG_ILLEGAL) && !hasNavigatedToLogin) {
             hasNavigatedToLogin = true;
             let content = '';
@@ -111,15 +150,11 @@ export function usePaginationState(options?: PaginationProps) {
         });
       }
 
-      // Update state
-      setCurrentPage(page);
-      setHasMoreData(hasMore);
-      setCurrentPageData(newPageData);
-
-      // Call page change callback
-      options?.onPageChange?.(page);
+      // Clear loading state
+      setIsLoading(false);
     } catch (error) {
       console.error('Failed to load page:', error);
+      setIsLoading(false);
     }
   };
 
@@ -127,6 +162,7 @@ export function usePaginationState(options?: PaginationProps) {
     currentPage,
     hasMoreData,
     currentPageData,
+    isLoading,
     goToPage,
     setPageSize,
     getCurrentPageData,
