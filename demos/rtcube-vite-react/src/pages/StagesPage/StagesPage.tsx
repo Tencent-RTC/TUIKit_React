@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
-import { useUIKit } from '@tencentcloud/chat-uikit-react';
-import { useLoginState, LoginStatus } from 'tuikit-atomicx-react';
+import { useUIKit, useLoginState } from '@tencentcloud/chat-uikit-react';
 import { Button } from '@tencentcloud/uikit-base-component-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Logo from '../../assets/RTCubeLogo.png';
@@ -13,15 +12,15 @@ import styles from './StagesPage.module.scss';
 
 function StagesPage() {
   const navigate = useNavigate();
-  const { logout, status, loginUserInfo } = useLoginState();
+  const { logout, status } = useLoginState();
   const { sceneId } = useParams();
   const { t } = useUIKit();
 
   useEffect(() => {
-    if (status !== LoginStatus.SUCCESS) {
-      navigate('/login');
+    if (status !== 'success') {
+      navigate('/');
     }
-  }, [sceneId, status, loginUserInfo, navigate]);
+  }, []);
 
   const scenes = getEnabledScenes();
 
@@ -49,7 +48,8 @@ function StagesPage() {
 
   function handleLogout() {
     logout();
-    localStorage.removeItem('im-user-info');
+    localStorage.removeItem('userinfo');
+    navigate('/');
   }
 
   return (

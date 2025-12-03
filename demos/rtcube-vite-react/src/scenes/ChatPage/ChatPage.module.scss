@@ -1,33 +1,142 @@
-@use "@tencentcloud/uikit-base-component-react/dist/styles/theme/util" as *;
-@use '../../styles/mixins' as mixins;
-
-.ChatPage {
+.chat-layout {
   flex: 1;
   display: flex;
   overflow: hidden;
-  margin: 10vh 5vw;
-  flex-direction: row;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.08), inset 0 -1px 0 rgba(255,255,255,0.05);
+  background-color: var(--uikit-theme-light-bg-color-operate);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08), inset 0 -1px 0 rgba(255, 255, 255, 0.05);
   border-radius: 16px;
-  
-  @include theme() {
-    background-color: get(bg-color-operate);
-    color: get(text-color-primary);
-  }
 
-  @include mixins.tablet {
+  @media (min-width: 1280px) and (max-width: 1919px) {
     margin: 10vh 15vw;
   }
+
+  @media (min-width: 1920px) {
+    margin: 10vh 20vw;
+  }
 }
 
-.sidebar {
-  flex: 0 0 350px;
+.dark.chat-layout {
+  background-color: var(--uikit-theme-dark-bg-color-operate);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2), inset 0 -1px 0 rgba(0, 0, 0, 0.05);
 }
 
-.mainContent {
-  flex: 1 1 auto;
+.conversation-list-panel {
+  width: 300px;
   display: flex;
   flex-direction: column;
-  border-left: 1px solid rgba(0, 0, 0, 0.08);
-  min-width: 0;
+  border-right: 1px solid var(--uikit-theme-light-stroke-color-primary);
+  overflow: hidden;
+
+  :global(.dark) & {
+    border-right: 1px solid var(--uikit-theme-dark-stroke-color-primary);
+  }
+}
+
+.chat-content-panel {
+  flex: 1;
+  position: relative;
+}
+
+.contact-detail-panel {
+  flex: 1;
+}
+
+.call-kit {
+  position: fixed !important;
+  top: 50%;
+  left: 50%;
+  z-index: 999;
+  transform: translate(-50%, -50%);
+  max-width: 800px;
+  max-height: 600px;
+}
+
+.icon-button {
+  padding: 4px 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  border-radius: 4px;
+  font-size: 18px;
+  color: var(--uikit-theme-light-text-color-link);
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  :global(.dark) & {
+    color: var(--uikit-theme-dark-text-color-link);
+  }
+
+  &:hover {
+    background-color: var(--uikit-theme-light-button-color-secondary-hover);
+
+    :global(.dark) & {
+      background-color: var(--uikit-theme-dark-button-color-secondary-hover);
+    }
+  }
+
+  &:active {
+    background-color: var(--uikit-theme-light-button-color-secondary-active);
+
+    :global(.dark) & {
+      background-color: var(--uikit-theme-dark-button-color-secondary-active);
+    }
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.chat-sidebar {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  min-width: 300px;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--uikit-theme-light-bg-color-operate);
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.04),
+              -4px 0 16px rgba(0, 0, 0, 0.06),
+              -8px 0 32px rgba(0, 0, 0, 0.08);
+  overflow: auto;
+  z-index: 1000;
+
+  &.dark {
+    background-color: var(--uikit-theme-dark-bg-color-operate);
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.2),
+                -4px 0 16px rgba(0, 0, 0, 0.3),
+                -8px 0 32px rgba(0, 0, 0, 0.4),
+                -1px 0 0 rgba(255, 255, 255, 0.08);
+  }
+}
+
+.chat-sidebar__header {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background-color: var(--uikit-theme-light-bg-color-operate);
+  border-bottom: 1px solid var(--uikit-theme-light-stroke-color-primary);
+  z-index: 10;
+
+  .chat-sidebar.dark & {
+    background-color: var(--uikit-theme-dark-bg-color-operate);
+    border-bottom: 1px solid var(--uikit-theme-dark-stroke-color-primary);
+  }
+}
+
+.chat-sidebar__title {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--uikit-theme-light-text-color-primary);
+
+  .chat-sidebar.dark & {
+    color: var(--uikit-theme-dark-text-color-primary);
+  }
 }

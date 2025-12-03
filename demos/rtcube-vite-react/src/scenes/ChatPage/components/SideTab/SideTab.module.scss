@@ -1,0 +1,119 @@
+.side-tab {
+  width: 72px;
+  height: 100%;
+  background: var(--uikit-theme-light-bg-color-function);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 0;
+  transition: background 0.3s;
+
+  &.dark {
+    background: var(--uikit-theme-dark-bg-color-function);
+  }
+}
+
+.avatar-wrapper {
+  position: relative;
+  margin-bottom: 24px;
+  cursor: pointer;
+
+  &:hover {
+    :global(.tui-avatar) {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .tooltip {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+}
+
+.tooltip {
+  position: absolute;
+  left: 60px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: all 0.3s;
+  z-index: 1000;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: -6px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 6px solid transparent;
+    border-right-color: rgba(0, 0, 0, 0.85);
+  }
+
+  .side-tab.dark & {
+    background: rgba(255, 255, 255, 0.95);
+    color: #1a1a1a;
+
+    &::before {
+      border-right-color: rgba(255, 255, 255, 0.95);
+    }
+  }
+}
+
+.tooltip__name {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.tooltip__id {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tab-item {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+  color: var(--uikit-theme-light-text-color-primary);
+
+  .side-tab.dark & {
+    color: var(--uikit-theme-dark-text-color-primary);
+  }
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.05);
+
+    .side-tab.dark & {
+      background: rgba(255, 255, 255, 0.1);
+    }
+  }
+
+  &.active {
+    background: var(--uikit-theme-light-button-color-primary-default);
+    color: var(--uikit-theme-light-text-color-button);
+
+    .side-tab.dark & {
+      background: var(--uikit-theme-dark-button-color-primary-default);
+      color: var(--uikit-theme-dark-text-color-button);
+    }
+  }
+}

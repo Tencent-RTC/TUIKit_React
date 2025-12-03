@@ -46,12 +46,12 @@ function ChatHeader(props: ChatHeaderProps) {
   return (
     <DefaultChatHeader
       ChatHeaderLeft={<ChatHeaderLeft />}
-      ChatHeaderRight={(
+      ChatHeaderRight={
         <ChatHeaderRight
           onMenuClick={props.onMenuClick}
           onSearchClick={props.onSearchClick}
         />
-      )}
+      }
       enableCall
     />
   );
