@@ -1,4 +1,5 @@
 .placeholderEmpty {
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -7,8 +8,9 @@
   padding: 40px 20px;
   position: relative;
 
-  .dark {
-    color: #fff;
+  &.dark {
+    background-color: var(--uikit-theme-dark-bg-color-operate);
+    color: var(--uikit-theme-dark-text-color-primary);
   }
 }
 

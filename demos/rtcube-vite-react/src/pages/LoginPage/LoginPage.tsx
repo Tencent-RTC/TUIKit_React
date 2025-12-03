@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import { useUIKit } from '@tencentcloud/chat-uikit-react';
-import { useLoginState } from 'tuikit-atomicx-react';
+import { useUIKit, useLoginState } from '@tencentcloud/chat-uikit-react';
 import { Toast } from '@tencentcloud/uikit-base-component-react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { genTestUserSig } from '@/debug';
 import styles from './LoginPage.module.scss';
+import { genTestUserSig } from '@/debug';
 
 /**
  * External links for privacy policy and user agreement

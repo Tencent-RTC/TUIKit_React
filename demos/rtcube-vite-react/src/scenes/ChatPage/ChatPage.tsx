@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import {
   ConversationList,
   Chat,
@@ -10,89 +10,107 @@ import {
   ContactList,
   ContactInfo,
   useUIKit,
+  useConversationListState,
 } from '@tencentcloud/chat-uikit-react';
-import { Drawer } from '@tencentcloud/uikit-base-component-react';
 import { TUICallKit } from '@trtc/calls-uikit-react';
 import cs from 'classnames';
 import styles from './ChatPage.module.scss';
-import { TabList, PlaceholderEmpty, ChatHeader } from './components';
+import { SideTab, PlaceholderEmpty, ChatHeader } from './components';
 import type { TabKey } from './components';
 
 function ChatPage() {
-  const { t } = useUIKit();
+  const { t, theme } = useUIKit();
+  const { activeConversation, setActiveConversation } = useConversationListState();
   const [activeTab, setActiveTab] = useState<TabKey>('conversation');
-  const [isChatSettingOpen, setChatSettingOpen] = useState(false);
-  const [isChatSearchOpen, setChatSearchOpen] = useState(false);
+  const [isChatSettingShow, setChatSettingShow] = useState(false);
+  const [isSearchInChatShow, setSearchInChatShow] = useState(false);
+
+  useLayoutEffect(() => {
+    // default open a c2c conversation, you can change it.
+    const peerUserID = 'administrator';
+    setActiveConversation(`C2C${peerUserID}`);
+  }, []);
 
   useEffect(() => {
-    if (isChatSearchOpen) {
-      setChatSettingOpen(false);
-    }
-  }, [isChatSearchOpen]);
+    setChatSettingShow(false);
+    setSearchInChatShow(false);
+  }, [activeConversation?.conversationID]);
 
   const handleTabChange = (tab: TabKey) => {
     setActiveTab(tab);
   };
 
   return (
-    <div className={styles.ChatPage}>
-      <TUICallKit
-        style={{
-          position: 'fixed',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          zIndex: 999,
-        }}
-      />
-      <TabList
-        activeTab={activeTab}
-        onActiveTabChange={handleTabChange}
-        onChange={handleTabChange}
-      />
-      {activeTab === 'conversation' && (
-        <ConversationList className={cs(styles.conversationList, styles.sidebar)} enableSearch={false} enableCreate={false} />
-      )}
-      {activeTab === 'contact' && (
-        <ContactList className={cs(styles.contactList, styles.sidebar)} />
-      )}
-      <div className={styles.mainContent}>
+    <div className={cs(styles['chat-layout'], { 'dark': theme === 'dark' })}>
+      <TUICallKit className={styles['call-kit']} />
+
+      {/* SideTab Navigation */}
+      <SideTab activeTab={activeTab} onChange={handleTabChange} />
+
+      {/* Conversation/Contact List Panel */}
+      <div className={styles['conversation-list-panel']}>
         {activeTab === 'conversation' && (
-          <Chat PlaceholderEmpty={<PlaceholderEmpty type="chat" />}>
-            <ChatHeader
-              onMenuClick={() => setChatSettingOpen(!isChatSettingOpen)}
-              onSearchClick={() => setChatSearchOpen(!isChatSearchOpen)}
-            />
-            <MessageList />
-            <MessageInput />
-          </Chat>
+          <ConversationList />
         )}
-        {activeTab === 'contact' && (
-          <ContactInfo
-            PlaceholderEmpty={<PlaceholderEmpty type="contact" />}
-            onSendMessage={() => setActiveTab('conversation')}
-            onEnterGroup={() => setActiveTab('conversation')}
-          />
-        )}
+        {activeTab === 'contact' && <ContactList />}
       </div>
 
-      <Drawer
-        title={t('scene.chat.drawer.settings')}
-        modelValue={isChatSettingOpen}
-        onClose={() => setChatSettingOpen(false)}
-        appendTo="body"
-        size={400}
-      >
-        <ChatSetting />
-      </Drawer>
-      <Drawer
-        title={t('scene.chat.drawer.search')}
-        modelValue={isChatSearchOpen}
-        onClose={() => setChatSearchOpen(false)}
-        appendTo="body"
-      >
-        <Search style={{ minWidth: '300px' }} variant={VariantType.EMBEDDED} />
-      </Drawer>
+      {/* Chat Content Panel */}
+      {activeTab === 'conversation' && (
+        <Chat
+          PlaceholderEmpty={<PlaceholderEmpty type="chat" />}
+          className={styles['chat-content-panel']}
+        >
+          <ChatHeader
+            onMenuClick={() => setChatSettingShow(!isChatSettingShow)}
+            onSearchClick={() => setSearchInChatShow(!isSearchInChatShow)}
+          />
+          <MessageList />
+          <MessageInput />
+
+          {/* Chat Setting Sidebar */}
+          {isChatSettingShow && (
+            <div className={cs(styles['chat-sidebar'], { [styles.dark]: theme === 'dark' })}>
+              <div className={styles['chat-sidebar__header']}>
+                <span className={styles['chat-sidebar__title']}>{t('scene.chat.drawer.settings')}</span>
+                <button
+                  className={styles['icon-button']}
+                  onClick={() => setChatSettingShow(false)}
+                >
+                  ✕
+                </button>
+              </div>
+              <ChatSetting />
+            </div>
+          )}
+
+          {/* Search in Chat Sidebar */}
+          {isSearchInChatShow && (
+            <div className={cs(styles['chat-sidebar'], { [styles.dark]: theme === 'dark' })}>
+              <div className={styles['chat-sidebar__header']}>
+                <span className={styles['chat-sidebar__title']}>{t('scene.chat.drawer.search')}</span>
+                <button
+                  className={styles['icon-button']}
+                  onClick={() => setSearchInChatShow(false)}
+                >
+                  ✕
+                </button>
+              </div>
+              <Search style={{ minWidth: '300px' }} variant={VariantType.EMBEDDED} />
+            </div>
+          )}
+        </Chat>
+      )}
+
+      {/* Contact Detail Panel */}
+      {activeTab === 'contact' && (
+        <ContactInfo
+          PlaceholderEmpty={<PlaceholderEmpty type="contact" />}
+          className={styles['contact-detail-panel']}
+          onSendMessage={() => setActiveTab('conversation')}
+          onEnterGroup={() => setActiveTab('conversation')}
+        />
+      )}
     </div>
   );
 }

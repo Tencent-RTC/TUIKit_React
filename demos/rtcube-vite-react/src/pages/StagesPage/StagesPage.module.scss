@@ -5,11 +5,9 @@
 }
 
 .stageHeader {
-  position: sticky;
-  top: 0;
+  width: 100%;
   height: 72px;
   display: flex;
-  flex-shrink: 0;
   align-items: center;
   justify-content: space-between;
   padding: 0 16px;

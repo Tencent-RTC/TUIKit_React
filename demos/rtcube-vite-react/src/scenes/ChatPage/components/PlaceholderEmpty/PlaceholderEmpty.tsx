@@ -69,7 +69,7 @@ const PlaceholderEmpty: React.FC<PlaceholderEmptyProps> = ({
   const content = getDefaultContent();
 
   return (
-    <div className={cs(styles.placeholderEmpty, theme === 'dark' ? styles.dark : '')}>
+    <div className={cs(styles.placeholderEmpty, { [styles.dark]: theme === 'dark' })}>
       <div className={styles.content}>
         <div className={styles.iconWrapper}>
           {icon || content.icon}
