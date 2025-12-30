@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
-import { useUIKit, useLoginState } from '@tencentcloud/chat-uikit-react';
+import { useUIKit } from '@tencentcloud/chat-uikit-react';
 import { Button } from '@tencentcloud/uikit-base-component-react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useLoginState } from 'tuikit-atomicx-react';
 import Logo from '../../assets/RTCubeLogo.png';
 import { getEnabledScenes } from '../../config/scenes';
 import CallPage from '../../scenes/CallPage';
