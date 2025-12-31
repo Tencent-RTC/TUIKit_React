@@ -1,49 +1,90 @@
 # Web Vite React Demo
 
-这是一个基于 `@tencentcloud/chat-uikit-react` 的演示项目，使用 Vite + React + TypeScript 构建。
+English | [简体中文](./README_ZH.md) 
 
-## 🚀 推荐：使用更高效的 AI 集成助手
-我们为您提供了全新的 AI 集成方式，如果您不需要完整的 Demo 工程, 只想快速开始集成，推荐您使用更高效的 AI 集成助手，只需要简单描述您的需求，即可自动生成集成代码，大幅提升开发效率。</br>
-[点击这里，立即体验 AI 集成](https://cloud.tencent.com/document/product/269/124481)
+A demo project based on `@tencentcloud/chat-uikit-react`, built with Vite + React + TypeScript.
 
-## 开发
+## 🚀 Recommended: AI Integration Assistant
+
+We provide a brand-new AI integration approach. If you don't need the complete Demo project and just want to get started quickly with integration, we recommend using our more efficient AI Integration Assistant. Simply describe your requirements, and it will automatically generate integration code, significantly improving development efficiency.
+
+[Click here to experience AI Integration](https://trtc.io/document/72277?product=chat&menulabel=uikit&platform=react)
+
+## Project Overview
+
+This project demonstrates how to integrate Tencent Cloud Chat UIKit into a React application, providing the following features:
+
+- 💬 **Chat** - instant messaging
+
+## Prerequisites
+
+- Node.js >= 20.0.0
+- pnpm >= 9.0.0
+- Tencent Cloud IM account with SDKAppID and SecretKey
+
+## Quick Start
+
+### 1. Clone the Repository
 
 ```bash
-# 安装依赖
-npm install
+git clone <repository-url>
+cd rtcube/demos/web-vite-react
+```
 
-# 启动开发服务器
+### 2. Install Dependencies
+
+```bash
+# Install dependencies from the project root
+npm i
+```
+
+### 3. Run the Project
+
+```bash
 npm run dev
-
-# 构建项目
-npm run build
-
-# 预览构建结果
-npm run preview
 ```
 
-## 项目结构
+## Project Structure
 
 ```
-web-vite-react/
-├── src/
-│   ├── App.tsx          # 主应用组件
-│   ├── main.tsx         # 应用入口
-│   ├── index.css        # 全局样式
-│   └── vite-env.d.ts    # Vite 类型定义
-├── index.html           # HTML 模板
-├── package.json         # 项目配置
-├── tsconfig.json        # TypeScript 配置
-├── tsconfig.app.json    # 应用 TypeScript 配置
-├── tsconfig.node.json   # Node.js TypeScript 配置
-├── vite.config.ts       # Vite 配置
-└── .eslintrc.cjs        # ESLint 配置
+src/
+├── assets/          # Static assets
+├── components/      # Reusable components
+├── config/          # Configuration files
+├── debug/           # Debug utilities (UserSig generation)
+├── locales/         # i18n language files
+├── pages/           # Page components
+│   ├── HomePage/    # Home page
+│   ├── LoginPage/   # Login page
+│   └── StagesPage/  # Stage selection page
+├── router/          # Route configuration
+├── scenes/          # Feature scenes
+│   ├── ChatPage/    # Chat scene
+├── styles/          # Global styles and mixins
+├── App.tsx          # Root component
+└── main.tsx         # Entry point
 ```
 
-## 功能特性
+## Available Scripts
 
-- ✅ Vite 快速开发服务器
-- ✅ React 18 + TypeScript
-- ✅ 集成 chat-uikit-react
-- ✅ ESLint 代码规范
-- ✅ 路径别名支持 (@/*)
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server |
+
+## Tech Stack
+
+- **Framework**: React 18
+- **Build Tool**: Vite 5
+- **Language**: TypeScript 5
+- **Routing**: React Router 6
+- **Styling**: SCSS Modules
+- **UI Components**: @tencentcloud/chat-uikit-react
+
+## Documentation
+
+- [Chat UIKit React Documentation](https://trtc.io/document/50055?product=chat&menulabel=uikit&platform=react)
+- [Tencent Cloud IM Product](https://trtc.io/document/chat-overview?product=chat&menulabel=uikit&platform=react)
+
+## License
+
+This project is for demonstration purposes only.
