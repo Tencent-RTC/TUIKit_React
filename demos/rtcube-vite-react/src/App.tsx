@@ -10,7 +10,10 @@ const language = browserLang.startsWith('zh') ? 'zh-CN' : 'en-US';
 
 function App() {
   return (
-    <UIKitProvider language={language} theme="light">
+    <UIKitProvider 
+      // language={language} 
+      theme="light"
+    >
       <RouterProvider router={router} />
     </UIKitProvider>
   );
