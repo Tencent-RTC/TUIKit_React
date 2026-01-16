@@ -1,0 +1,41 @@
+@mixin text-size-16 {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+@mixin text-size-12 {
+  font-size: 12px;
+  font-weight: 400;
+}
+
+@mixin text-size-14 {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+@mixin text-size-24 {
+  font-size: 24px;
+  font-weight: 500;
+}
+
+@mixin scrollbar {
+  &::-webkit-scrollbar {
+    width: 6px;
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--uikit-color-gray-3);
+    border-radius: 3px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+
+    &:hover {
+      background: var(--uikit-color-gray-3);
+    }
+  }
+}
