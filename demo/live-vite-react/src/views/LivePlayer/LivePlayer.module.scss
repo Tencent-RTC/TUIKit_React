@@ -1,0 +1,23 @@
+.livePlayer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: 16px;
+  background-color: var(--uikit-bg-color-topbar);
+  color: var(--uikit-text-color-primary);
+
+  .livePlayer__header {
+    width: 100%;
+    padding-bottom: 16px;
+  }
+
+  .livePlayer__body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    overflow: auto;
+    align-items: center;
+  }
+}
