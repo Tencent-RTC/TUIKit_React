@@ -6,8 +6,6 @@ import {
   IconSpeakerOff,
   IconClose1 as IconClose,
   IconStopCircle,
-  IconNotification,
-  IconChevronDown,
   IconEmpty,
   useUIKit,
   Action,
@@ -220,11 +218,6 @@ const LiveList: React.FC<LiveListProps> = ({ monitorLiveInfoList, className }) =
             </div>
           </div>
           <div className={styles['operate-button']}>
-            <div className={`${styles['warn-button']} ${styles.button}`}>
-              <IconNotification />
-              <span className={styles['button-text']}>{t('Warning')}</span>
-              <IconChevronDown />
-            </div>
             <div className={`${styles['close-button']} ${styles.button}`} onClick={() => handleCloseLive(item.liveId)}>
               <IconStopCircle />
               <span className={styles['button-text']}>{t('Force Close')}</span>
