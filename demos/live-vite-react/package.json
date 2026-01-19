@@ -1,7 +1,7 @@
 {
   "name": "@tencentcloud/live-uikit-react",
   "private": true,
-  "version": "5.0.0",
+  "version": "5.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite --force",
@@ -14,7 +14,7 @@
   "dependencies": {
     "@tencentcloud/uikit-base-component-react": "1.1.5",
     "@tencentcloud/tuiroom-engine-js": "3.6.0",
-    "tuikit-atomicx-react": "5.0.0",
+    "tuikit-atomicx-react": "5.0.1",
     "classnames": "^2.5.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
