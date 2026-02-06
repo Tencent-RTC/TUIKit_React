@@ -9,10 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tencentcloud/chat-uikit-react": "^5.3.0",
-    "@tencentcloud/uikit-base-component-react": "1.1.7",
-    "@trtc/calls-uikit-react": "4.4.2",
-    "tuikit-atomicx-react": "5.3.0",
+    "@tencentcloud/chat-uikit-react": "^4.5.3",
+    "@tencentcloud/uikit-base-component-react": "1.1.4",
+    "@trtc/calls-uikit-react": "4.4.0",
+    "tuikit-atomicx-react": "4.5.3",
     "classnames": "^2.5.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
