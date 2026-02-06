@@ -1,8 +1,9 @@
+@use "@tencentcloud/uikit-base-component-react/dist/styles/theme/util" as *;
+
 .LivePage {
-  display: flex;
-  flex: 1;
   width: 100%;
   min-height: 0;
+  display: flex;
   flex-direction: column;
   background: #131417;
   color: #f6f8ff;
@@ -33,6 +34,12 @@
   color: rgba(243, 246, 255, 0.7);
 }
 
+.LivePage__controls {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
 .LivePage__buttonPrimary {
   min-width: 120px;
   border-radius: 999px;
@@ -51,10 +58,6 @@
   min-width: 90px;
   border-radius: 999px;
   color: #cbd5f5;
-}
-
-.LivePage_leaveLive {
-  cursor: pointer;
 }
 
 .LivePage__roomInput {
@@ -90,19 +93,6 @@
   overflow: hidden;
 }
 
-.LivePage__listContainer {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  background: rgba(8, 10, 22, 0.96);
-  border-radius: 20px;
-  margin: 0 16px;
-  padding-top: 16px;
-}
-
 .LivePage__content {
   flex: 1;
   display: flex;
@@ -119,7 +109,9 @@
   gap: 12px;
   padding: 0 24px;
   height: 64px;
-  background-color: #1f2024;
+  @include theme() {
+    background-color: get(bg-color-operate);
+  }
 }
 
 .LivePage__stageAvatar {
