@@ -1,3 +1,5 @@
+import TUIRoomEngine from "@tencentcloud/tuiroom-engine-js";
+
 /**
  * 安全执行 JSON.parse
  * @param data
@@ -22,6 +24,22 @@ function safelyParse(data: string) {
   return result;
 }
 
+async function initRoomEngineLanguage(language: string) {
+  let lang: string = 'en';
+  if (language.includes('en')) {
+    lang = 'en';
+  } else if (language.includes('zh')) {
+    lang = 'zh-Hans';
+  }
+  await TUIRoomEngine.callExperimentalAPI(JSON.stringify({
+    api: 'setCurrentLanguage',
+    params: {
+      language: lang,
+    },
+  }));
+}
+
 export {
-  safelyParse
+  safelyParse,
+  initRoomEngineLanguage
 };
