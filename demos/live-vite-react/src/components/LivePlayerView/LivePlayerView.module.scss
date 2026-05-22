@@ -43,6 +43,22 @@
         margin: 0 8px;
         border: 1px solid var(--uikit-color-white-7);
       }
+
+      // Shown when the live has ended — replaces the host avatar with a
+      // generic user icon in a grey circle, aligned with Vue's
+      // `.top-ended-avatar` styling.
+      .livePlayerView__headerEndedAvatar {
+        width: 32px;
+        height: 32px;
+        margin: 0 8px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.12);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        color: rgba(255, 255, 255, 0.55);
+      }
     }
 
     .livePlayerView__player {

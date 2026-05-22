@@ -1,84 +1,117 @@
 import type React from 'react';
-import { useCallback, useEffect, useState } from 'react';
-import TUIRoomEngine, { TUIRoomEvents } from '@tencentcloud/tuiroom-engine-js';
-import { IconChevronLeft, useUIKit, MessageBox, Button } from '@tencentcloud/uikit-base-component-react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { IconChevronLeft, IconUser, useUIKit, Button, Toast } from '@tencentcloud/uikit-base-component-react';
 import { useNavigate } from 'react-router-dom';
-import { Avatar, LiveView, LiveGift, LiveListEvent, BarrageList, BarrageInput, LiveAudienceList, useLiveListState, useLiveAudienceState, useRoomEngine } from 'tuikit-atomicx-react';
+import { Avatar, LiveView, LiveGift, LiveListEvent, BarrageList, BarrageInput, LiveAudienceList, useLiveListState, useLiveAudienceState, useLoginState } from 'tuikit-atomicx-react';
 import LiveEndedIcon from '../../assets/live-ended.svg';
 import styles from './LivePlayerView.module.scss';
 
 interface LivePlayerViewProps {
   className?: string;
+  /** When true, displays the "live ended" overlay immediately (e.g. when
+   *  joinLive fails because the room no longer exists). */
+  joinFailed?: boolean;
 }
 
-const LivePlayerView: React.FC<LivePlayerViewProps> = ({ className }) => {
+const LivePlayerView: React.FC<LivePlayerViewProps> = ({ className, joinFailed }) => {
   const { t } = useUIKit();
   const navigate = useNavigate();
-  const roomEngine = useRoomEngine();
   const { currentLive, leaveLive, subscribeEvent, unsubscribeEvent } = useLiveListState();
-  const { audienceCount } = useLiveAudienceState();
+  const { audienceList, audienceCount } = useLiveAudienceState();
+  const { loginUserInfo } = useLoginState();
   const [liveEndedOverlayVisible, setLiveEndedOverlayVisible] = useState(false);
 
-  const handleAutoPlayFailed = useCallback(() => {
-    MessageBox.alert({
-      content: t('live_player_view.auto_play_failed_content'),
-      confirmText: t('live_player_view.auto_play_failed_confirm'),
-      showClose: false,
-      modal: true,
-    });
-  }, [t]);
 
-  const handleKickedOutOfLive = useCallback(() => {
-    MessageBox.alert({
-      title: t('live_player_view.unable_to_watch'),
-      content: t('live_player_view.kicked_out_content'),
-      confirmText: t('live_player_view.back_to_home'),
-      showClose: false,
-      modal: true,
-      callback: () => {
-        navigate('/live-list');
-      },
-    });
-  }, [navigate, t]);
+  // Audience-side default playback quality is driven entirely by
+  // `tuikit-atomicx-react`'s LivePlayerState — `initializeResolution`
+  // queries the CDN-available variant list and picks the SDK-preferred
+  // entry (highest available, matching Vue). We deliberately do NOT
+  // override that here: a previous attempt to "align with the publisher
+  // default" by force-switching to 720P was wrong, because the publisher's
+  // actual encoding resolution is dynamic (host can pick 1080P / 720P /
+  // 540P / 360P at pusher start) and there is no client-side signal for
+  // the source resolution. Re-querying on every (re)appearance of a
+  // liveId — including the case where the host refreshes and re-creates
+  // the live with the same id — is handled inside LivePlayerState's
+  // `liveListState.subscribe` listener so that audience-side defaults
+  // stay consistent with the publisher across host re-publishes.
+
+
+  // Mute detection: show toast when the current user is muted/unmuted by the host
+  // Aligned with Vue's `watch(isMessageMuted)` behavior — only fires on value
+  // transitions while the component is mounted.
+  const isMessageMuted = useMemo(() => {
+    const localUser = audienceList?.find(item => item.userId === loginUserInfo?.userId);
+    return !!localUser?.isMessageDisabled;
+  }, [audienceList, loginUserInfo?.userId]);
+
+  const prevMutedRef = useRef(false);
+  useEffect(() => {
+    if (isMessageMuted === prevMutedRef.current) {
+      return;
+    }
+    if (isMessageMuted) {
+      Toast.info({ message: t('live_player_view.you_have_been_muted') });
+    } else {
+      Toast.info({ message: t('live_player_view.you_have_been_unmuted') });
+    }
+    prevMutedRef.current = isMessageMuted;
+  }, [isMessageMuted, t]);
+
+  // Kicked-out-of-live dialogs are now handled globally by
+  // useGlobalEventDialogs() in ProtectedRoute.
 
   const handleLiveEnded = useCallback(() => {
     setLiveEndedOverlayVisible(true);
   }, []);
 
+  // Also show the ended overlay if the parent indicates joinLive failed
+  // (room no longer exists on page refresh).
+  useEffect(() => {
+    if (joinFailed) {
+      setLiveEndedOverlayVisible(true);
+    }
+  }, [joinFailed]);
+
   const handleLeaveLive = useCallback(async () => {
+    // Wait for `leaveLive()` to finish BEFORE navigating away.
+    //
+    // Why: `navigate('/live-list')` synchronously unmounts this view
+    // (including the inner <LiveView />). If we navigate first, React
+    // tears down the player while RoomEngine's leave state machine is
+    // still in flight - listeners that the leave flow depends on get
+    // detached, and the engine ends up in a "half-exited" state
+    // (`room_manager.joined_room` stays `1`). The next time the user
+    // enters the same room, `EnterRoom` hits the
+    // "repeat enter room, ignore it" branch in the wasm engine: the
+    // join promise resolves successfully but the subscription pipeline
+    // is never re-established, so the audience just sees an endless
+    // loading spinner.
+    //
+    // Suppress the misleading "unmuted" toast that would otherwise fire
+    // when `audienceList` clears during the leave: pin the previous
+    // muted flag so the diff effect short-circuits.
+    prevMutedRef.current = isMessageMuted;
     try {
       await leaveLive();
-      navigate('/live-list');
     } catch (error) {
       console.error('Failed to leave live:', error);
-      MessageBox.alert({
-        content: t('live_player_view.leave_live_failed_content'),
-        confirmText: t('live_player_view.confirm'),
-        showClose: false,
-        modal: true,
-      });
+    } finally {
+      navigate('/live-list');
     }
-  }, [leaveLive, navigate, t]);
+  }, [isMessageMuted, leaveLive, navigate]);
 
-  // Setup event listeners
+  // Setup event listeners.
+  // Note: autoplay-failed handling is now built into <LiveView> — no need to
+  // subscribe to TUIRoomEvents.onAutoPlayFailed here.
+  // Note: ON_KICKED_OUT_OF_LIVE is handled by useGlobalEventDialogs() globally.
   useEffect(() => {
-    if (roomEngine.instance) {
-      roomEngine.instance.on(TUIRoomEvents.onAutoPlayFailed, handleAutoPlayFailed);
-    } else {
-      TUIRoomEngine.once('ready', () => {
-        roomEngine.instance?.on(TUIRoomEvents.onAutoPlayFailed, handleAutoPlayFailed);
-      });
-    }
-
     subscribeEvent(LiveListEvent.ON_LIVE_ENDED, handleLiveEnded);
-    subscribeEvent(LiveListEvent.ON_KICKED_OUT_OF_LIVE, handleKickedOutOfLive);
 
     return () => {
-      roomEngine.instance?.off(TUIRoomEvents.onAutoPlayFailed, handleAutoPlayFailed);
       unsubscribeEvent(LiveListEvent.ON_LIVE_ENDED, handleLiveEnded);
-      unsubscribeEvent(LiveListEvent.ON_KICKED_OUT_OF_LIVE, handleKickedOutOfLive);
     };
-  }, [handleAutoPlayFailed, handleLiveEnded, handleKickedOutOfLive]);
+  }, [handleLiveEnded]);
 
   return (
     <div className={`${styles.livePlayerView} ${className || ''}`}>
@@ -90,12 +123,23 @@ const LivePlayerView: React.FC<LivePlayerViewProps> = ({ className }) => {
               size="32"
               onClick={handleLeaveLive}
             />
-            <Avatar
-              className={styles.livePlayerView__headerAvatar}
-              src={currentLive?.liveOwner?.avatarUrl}
-              size={32}
-            />
-            <span>{currentLive?.liveOwner?.userName || currentLive?.liveOwner?.userId}</span>
+            {liveEndedOverlayVisible ? (
+              <>
+                <div className={styles.livePlayerView__headerEndedAvatar}>
+                  <IconUser size="24" />
+                </div>
+                <span>{t('live_player_view.live_ended_content')}</span>
+              </>
+            ) : (
+              <>
+                <Avatar
+                  className={styles.livePlayerView__headerAvatar}
+                  src={currentLive?.liveOwner?.avatarUrl}
+                  size={32}
+                />
+                <span>{currentLive?.liveOwner?.userName || currentLive?.liveOwner?.userId}</span>
+              </>
+            )}
           </div>
         </div>
         <div className={styles.livePlayerView__player}>
@@ -143,7 +187,10 @@ const LivePlayerView: React.FC<LivePlayerViewProps> = ({ className }) => {
           </div>
           <div className={styles.livePlayerView__messageListContent}>
             <BarrageList />
-            <BarrageInput />
+            <BarrageInput
+              disabled={liveEndedOverlayVisible}
+              placeholder={liveEndedOverlayVisible ? t('live_player_view.live_ended') : undefined}
+            />
           </div>
         </div>
       </div>

@@ -1,13 +1,18 @@
 import { useEffect } from 'react';
 import { createHashRouter, useLocation, useNavigate } from 'react-router-dom';
 import { STORAGE_KEYS } from '@/constants';
+import { useGlobalEventDialogs } from '@/hooks';
 import { Login } from '@/views/Login';
 import { LiveList } from '@/views/LiveList';
 import { LivePlayer } from '@/views/LivePlayer';
+import { LivePusher } from '@/views/LivePusher';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode; }) => {
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Centralized SDK event-driven dialogs (kicked offline, kicked out of live, etc.)
+  useGlobalEventDialogs();
 
   useEffect(() => {
     const userInfo = sessionStorage.getItem(STORAGE_KEYS.USER_INFO);
@@ -46,6 +51,10 @@ const routes = [
   {
     path: '/live-player',
     element: <LivePlayer />,
+  },
+  {
+    path: '/live-pusher',
+    element: <LivePusher />,
   }
 ];
 

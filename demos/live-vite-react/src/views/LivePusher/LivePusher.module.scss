@@ -1,0 +1,322 @@
+// Class names intentionally mirror the Vue3 implementation
+// (`web-vite-vue3/src/TUILiveKit/LivePusherView.vue`) so that the
+// generated CSS Modules hashes map 1:1 with the Vue demo, making
+// cross-framework DOM inspection straightforward.
+.live-pusher-page {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  box-sizing: border-box;
+  background: var(--bg-color-topbar);
+  color: var(--text-color-primary);
+
+  .live-pusher-page__header {
+    margin-bottom: 8px;
+  }
+}
+
+.live-pusher-main {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  gap: 6px;
+  border-radius: 8px;
+}
+
+.main-left,
+.main-right {
+  width: 18%;
+  min-width: 200px;
+  max-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.main-left-top,
+.main-right-top,
+.main-right-bottom,
+.main-center-top,
+.main-center-bottom {
+  background: var(--bg-color-operate);
+}
+
+.main-left-top {
+  flex: 1;
+  min-height: 0;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-title {
+  width: 100%;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 4px;
+  box-sizing: border-box;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--uikit-stroke-color-primary, #3a3c42);
+  color: var(--text-color-primary);
+  margin-bottom: 16px;
+}
+
+.title-text {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+}
+
+.title-count {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  color: var(--text-color-secondary);
+}
+
+.icon-back {
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.main-center {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-center-top {
+  height: 56px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 0;
+    height: 1px;
+    background: var(--uikit-stroke-color-primary, #3a3c42);
+  }
+}
+
+.main-center-top-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.live-name {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  max-width: 280px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-color-primary);
+}
+
+.copy-icon {
+  cursor: pointer;
+  color: var(--text-color-primary);
+
+  &:hover {
+    color: var(--text-color-link);
+  }
+}
+
+.main-center-top-right {
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--text-color-primary);
+}
+
+.main-center-center {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  // Align with Vue3: the preview BOX itself is aspect-ratio-locked and
+  // paints black internally. The wrapping slot must NOT have its own
+  // black background, otherwise an orientation switch visually does
+  // nothing - the inner preview does shrink to a 9:16 rectangle but the
+  // surrounding slot stays black, so the viewer cannot tell that
+  // anything changed.
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  :global(#atomicx-live-player-container > :nth-child(2)) {
+    display: none !important;
+  }
+}
+
+.main-center-bottom {
+  width: 100%;
+  min-height: 72px;
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    top: 0;
+    height: 1px;
+    background: var(--uikit-stroke-color-primary, #3a3c42);
+  }
+}
+
+.main-center-bottom-content {
+  width: 100%;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.main-center-bottom-left {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+.main-center-bottom-tools {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.main-center-bottom-right {
+  height: 100%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.main-right-top {
+  height: 30%;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-right-top-list {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.main-right-bottom {
+  flex: 1;
+  min-height: 0;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.pusher-audience-list {
+  margin-top: 2px;
+  border-radius: 8px;
+  background: var(--bg-color-operate);
+}
+
+.message-list-container {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  user-select: text;
+}
+
+.pusher-barrage-list {
+  background: var(--bg-color-operate);
+}
+
+.message-input-container {
+  padding-top: 8px;
+}
+
+.pusher-barrage-input {
+  background: var(--bg-color-operate);
+
+  // Align input content vertically with the emoji icon (match Vue demo
+  // behavior).
+  :global(.tiptap.ProseMirror) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100%;
+    height: 100%;
+    padding: 0;
+
+    p {
+      padding: 0;
+      line-height: 1.5;
+    }
+  }
+}
+
+.live-name-dialog-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 4px 0;
+}
+
+.live-name-dialog-item {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.live-name-dialog-label {
+  width: 80px;
+  flex-shrink: 0;
+  white-space: nowrap;
+  font-size: 14px;
+  color: var(--text-color-primary);
+}
+
+.live-name-dialog-input {
+  flex: 1;
+  min-width: 0;
+}
+
+@media screen and (max-width: 640px) {
+  .live-name-dialog-item {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .live-name-dialog-label {
+    width: auto;
+  }
+}
+
+@media (max-width: 1360px) {
+  .main-left,
+  .main-right {
+    min-width: 200px;
+  }
+}

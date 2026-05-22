@@ -1,0 +1,383 @@
+// Class names mirror the Vue3 LiveScenePanel implementation
+// (`ui-component/.../components/LiveScenePanel/*.vue`) so the generated
+// DOM structure matches Vue exactly.
+
+.live-scene-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+  height: 100%;
+
+  * {
+    box-sizing: border-box;
+  }
+
+  &.no-material {
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.materials-list {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 20px;
+  width: 100%;
+  overflow-y: auto;
+}
+
+.live-scene-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  color: var(--text-color-secondary);
+  font-size: 14px;
+  line-height: 22px;
+  font-weight: 500;
+}
+
+.live-scene-placeholder-content {
+  text-align: center;
+}
+
+// Button mode trigger wrapper (`live-scene-button` in Vue).
+.live-scene-button {
+  width: 100%;
+  position: relative;
+}
+
+.add-material-button {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 100%;
+  height: 40px;
+  border-radius: 20px;
+  background: #383f4d;
+  color: var(--text-color-primary);
+  font-size: 12px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background: #4f586b;
+  }
+}
+
+// Panel mode list is pushed below the placeholder content.
+.add-material-list-panel {
+  margin-top: 50px;
+  width: 100%;
+}
+
+// Button mode floating dropdown.
+.add-material-list {
+  width: 100%;
+  padding: 9px;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  z-index: 9;
+  border-radius: 8px;
+  background-color: rgba(45, 50, 62, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.add-material-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 40px;
+  border-radius: 20px;
+  border: none !important;
+  background: #383f4d !important;
+  color: var(--text-color-primary) !important;
+  font-size: 12px;
+  font-weight: 400;
+  margin-top: 24px;
+  cursor: pointer;
+  gap: 4px;
+  box-shadow: none !important;
+
+  :global(.tui-button-content) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+
+  &:first-child {
+    margin-top: 0;
+  }
+
+  &:hover {
+    background: #4f586b !important;
+  }
+}
+
+.add-material-item-compact {
+  margin-top: 0;
+  border-radius: 4px;
+  background: transparent !important;
+  color: #d5e0f2 !important;
+
+  &:hover {
+    background: rgba(209, 217, 236, 0.1) !important;
+  }
+}
+
+.material-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 6px;
+  cursor: pointer;
+  padding: 4px 8px;
+  z-index: 1;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+
+  &.show-dropdown {
+    z-index: 1000;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  &.active {
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
+.material-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #d5e0f2;
+  margin-right: 10px;
+}
+
+.material-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+  height: 20px;
+}
+
+.material-name {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-color-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 20px;
+}
+
+.material-controls {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.control-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: #d5e0f2;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  padding: 4px;
+  min-width: 100px;
+  background: #2d323e;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  z-index: 1001;
+  animation: fadeInScale 0.15s ease-out;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    right: 12px;
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 6px solid #2d323e;
+  }
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: #d5e0f2;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(209, 217, 236, 0.1);
+  }
+}
+
+.dropdown-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: currentColor;
+
+  svg {
+    display: block;
+    width: 14px;
+    height: 14px;
+  }
+}
+
+.dialog-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 10px 0;
+}
+
+.camera-setting-dialog {
+  :global(.tui-dialog-body) {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+}
+
+.video-preview {
+  width: 100%;
+  height: 300px;
+  border-radius: 0;
+  overflow: hidden;
+  background: #000;
+}
+
+.basic-setting {
+  display: flex;
+  width: 100%;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.item-setting {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  &:first-child {
+    max-width: 300px;
+  }
+
+  &:nth-child(2) {
+    max-width: 200px;
+  }
+}
+
+.title {
+  font-size: 14px;
+  color: var(--uikit-text-color-secondary, rgba(255, 255, 255, 0.55));
+}
+
+.mirror-container {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  color: var(--uikit-text-color-secondary, rgba(255, 255, 255, 0.55));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  &.mirror-active {
+    color: #d5e0f2;
+  }
+}
+
+.rename-input-wrap {
+  padding-top: 8px;
+  width: 100%;
+}
+
+.material-rename-dialog {
+  :global(.tui-dialog-body) {
+    width: 100%;
+  }
+
+  :global(.tui-input-wrapper) {
+    width: 100%;
+  }
+
+  :global(.tui-input) {
+    width: 100%;
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}

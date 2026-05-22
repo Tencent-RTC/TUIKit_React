@@ -1,9 +1,15 @@
-.liveHeader {
+.live-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  // Fix min-height to the default Button height (medium = 32px) so the logo
+  // and title stay vertically centered at a consistent position across pages,
+  // regardless of whether the login button (which drives natural height to 32px)
+  // is visible.
+  min-height: 32px;
+  user-select: none;
 
-  .liveHeader__left {
+  .live-header__left {
     display: flex;
     align-items: center;
     gap: 4px;
@@ -12,26 +18,40 @@
       cursor: pointer;
     }
 
-    .liveHeader__logo {
+    .live-header__logo {
       width: 26px;
       height: 24px;
     }
 
-    .liveHeader__title {
+    .live-header__title {
       font-size: 18px;
       font-weight: 600;
-      color: var(--uikit-text-color-primary);
+      color: var(--text-color-primary);
     }
   }
 
-  .liveHeader__right {
+  .live-header__right {
     display: flex;
     align-items: center;
     gap: 8px;
 
-    .liveHeader__name {
+    .live-header__start-live-button {
+      margin-right: 20px;
+    }
+
+    .live-header__name {
       font-size: 14px;
       font-weight: 400;
+      line-height: 22px;
+      color: var(--text-color-primary);
+    }
+
+    :global(.tui-button) {
+      color: var(--text-color-primary);
+    }
+
+    .live-header__logout-button {
+      color: var(--text-color-link) !important;
     }
   }
 }

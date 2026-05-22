@@ -1,0 +1,344 @@
+// Class names mirror the Vue3 live pusher control components
+// (`web-vite-vue3/src/TUILiveKit/component/*.vue` and the atomicx
+// AudioSettingPanel) so the generated DOM lines up 1:1 with the Vue
+// demo.
+
+.device-setting {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 8px;
+  border-radius: 6px;
+  background-color: var(--uikit-bg-color-bubble-reciprocal, rgba(25, 39, 64, 0.9));
+}
+
+.device-icon {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--uikit-text-color-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--uikit-text-color-link, #4086ff);
+  }
+}
+
+.audio-icon-container {
+  position: relative;
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  color: currentColor;
+  transform-origin: center;
+}
+
+.audio-level-container {
+  position: absolute;
+  top: 2px;
+  left: 7px;
+  display: flex;
+  flex-flow: column-reverse wrap;
+  justify-content: space-between;
+  width: 10px;
+  height: 14px;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.audio-level {
+  display: block;
+  width: 100%;
+  background-color: var(--text-color-success);
+  transition: height 0.2s;
+}
+
+.audio-icon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 24px;
+  height: 24px;
+}
+
+.device-slider {
+  width: 46px;
+
+  :global(.slider-thumb) {
+    width: 8px;
+    height: 8px;
+  }
+
+  :global(.slider-bubble) {
+    display: none;
+  }
+}
+
+// The reusable pusher bottom-bar button. Vue uses a `custom-icon-container`
+// + `custom-icon` + `custom-text` triple; keeping exactly the same names
+// here lets the layout settings / setting / orientation buttons look
+// identical across demos.
+.custom-icon-container {
+  position: relative;
+  min-width: 56px;
+  width: auto;
+  height: 56px;
+  padding: 0 4px;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--uikit-text-color-primary);
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+
+  > svg,
+  .custom-icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+  }
+
+  &:not(.disabled):hover {
+    box-shadow: 0 0 10px 0 var(--uikit-bg-color-mask, rgba(0, 0, 0, 0.35));
+    color: var(--uikit-text-color-link, #4086ff);
+  }
+}
+
+.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  color: var(--uikit-text-color-disabled, rgba(255, 255, 255, 0.35));
+}
+
+.custom-text {
+  font-size: 12px;
+  line-height: 16px;
+  white-space: nowrap;
+}
+
+.badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--uikit-text-color-error, #e54545);
+  color: #fff;
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.layout-panel,
+.setting-panel,
+.simple-panel {
+  width: 100%;
+}
+
+.layout-dialog,
+.setting-dialog {
+  max-height: calc(100vh - 80px);
+
+  :global(.tui-dialog-body) {
+    min-height: 0;
+    overflow: hidden;
+  }
+}
+
+.layout-dialog {
+  width: 480px;
+
+  :global(.tui-dialog-footer) {
+    padding-top: 32px;
+  }
+}
+
+.setting-dialog {
+  :global(.tui-dialog-body) {
+    overflow: auto;
+  }
+}
+
+.layout-panel {
+  max-height: calc(100vh - 220px);
+  overflow: auto;
+}
+
+.setting-panel {
+  max-height: calc(100vh - 188px);
+  overflow: auto;
+  // Leave breathing room on both sides so the Slider thumb, which extends
+  // 6px past the track at value=0/100, stays fully visible and is not
+  // clipped by the scrollable container.
+  padding-inline: 8px;
+}
+
+.layout-label {
+  margin: 4px 0 16px;
+  color: var(--text-color-primary, #ffffff);
+  font-size: 14px;
+}
+
+.options-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: flex-start;
+}
+
+.option-card {
+  box-sizing: border-box;
+  padding: 12px 13px;
+  width: 208px;
+  background: #3a3a3a;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  color: #ffffff;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #4a4a4a;
+    border-color: #5a5a5a;
+  }
+
+  &.active {
+    border-color: var(--text-color-link-hover, #2b6ad6);
+    background: var(--list-color-focused, #243047);
+  }
+}
+
+.option-info {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+}
+
+.option-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.option-name {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  transition: color 0.2s ease;
+}
+
+.section {
+  margin-bottom: 28px;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--uikit-text-color-primary);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.label {
+  width: 72px;
+  color: var(--uikit-text-color-secondary);
+  font-size: 14px;
+}
+
+.select {
+  flex: 1;
+}
+
+.divider {
+  height: 1px;
+  background: var(--uikit-stroke-color-primary, rgba(255, 255, 255, 0.12));
+  margin-bottom: 28px;
+}
+
+.audio-setting-tab {
+  width: 100%;
+  font-size: 14px;
+}
+
+.item-setting {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.title {
+  display: inline-block;
+  width: 100%;
+  margin-bottom: 8px;
+  font-size: 14px;
+  line-height: 22px;
+  color: var(--uikit-text-color-secondary);
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 10px;
+}
+
+.custom-slider {
+  flex: 1;
+
+  // Force the thumb to stay visible on the dark settings dialog even at
+  // value 0, where the default theme's `slider-color-button` blends into
+  // the surrounding track background. Pinning the fill and border here
+  // also prevents the thumb from disappearing during drag on dark themes.
+  :global(.slider-thumb) {
+    background-color: #fff;
+    border-color: var(--uikit-text-color-link, #4086ff);
+  }
+}
+
+.volume-value {
+  width: 32px;
+  text-align: right;
+}
+
+.mic-bar-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.mic-bar {
+  width: 3px;
+  height: 6px;
+  background: var(--uikit-text-color-secondary);
+
+  &.active {
+    background: var(--uikit-text-color-link, #4086ff);
+  }
+}
+
+.simple-panel {
+  min-height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--uikit-text-color-secondary);
+  font-size: 14px;
+}

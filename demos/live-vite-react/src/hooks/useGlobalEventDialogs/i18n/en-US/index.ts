@@ -1,0 +1,15 @@
+export const resource = {
+  'global_event.kicked_offline_title': 'Account logged in elsewhere',
+  'global_event.kicked_offline_content': 'Your account has been logged in on another device. You have been disconnected.',
+  'global_event.login_expired_title': 'Login expired',
+  'global_event.login_expired_content': 'Your login has expired. Please log in again.',
+  'global_event.back_to_login': 'Back to login',
+  'global_event.unable_to_watch': 'Unable to watch live',
+  'global_event.kicked_out_content': 'You have been removed from the live room and cannot watch the live stream',
+  'global_event.kicked_out_by_admin': 'You have been removed from the live room by the admin',
+  'global_event.kicked_out_by_server': 'You have been removed from the live room by the server',
+  'global_event.kicked_out_network_disconnected': 'Network disconnected, you have been removed from the live room',
+  'global_event.kicked_out_join_status_invalid': 'The live room status has changed while you were offline, unable to continue watching',
+  'global_event.kicked_out_rooms_exceed_limit': 'You have joined too many rooms, disconnected from the current live room',
+  'global_event.back_to_home': 'Back to home',
+};

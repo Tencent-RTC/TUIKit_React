@@ -3,12 +3,14 @@
   flex-direction: column;
   width: 100%;
   height: 100%;
-  background-color: var(--bg-color-topbar);
-  color: var(--text-color-primary);
+  background-color: var(--uikit-bg-color-topbar);
+  color: var(--uikit-text-color-primary);
   overflow: auto;
   box-sizing: border-box;
 
   .liveList__header {
+    position: relative;
+    z-index: 2;
     padding: 16px;
   }
 }

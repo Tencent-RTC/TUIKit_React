@@ -1,0 +1,15 @@
+export const resource = {
+  'global_event.kicked_offline_title': '账号在其他设备登录',
+  'global_event.kicked_offline_content': '您的账号已在其他设备登录，当前连接已断开。',
+  'global_event.login_expired_title': '登录已过期',
+  'global_event.login_expired_content': '您的登录已过期，请重新登录。',
+  'global_event.back_to_login': '返回登录',
+  'global_event.unable_to_watch': '当前无法观看直播',
+  'global_event.kicked_out_content': '您已被移出直播间，暂无法观看直播',
+  'global_event.kicked_out_by_admin': '您已被管理员移出直播间',
+  'global_event.kicked_out_by_server': '您已被服务端移出直播间',
+  'global_event.kicked_out_network_disconnected': '网络断开，已退出直播间',
+  'global_event.kicked_out_join_status_invalid': '离线期间直播间状态已变更，无法继续观看',
+  'global_event.kicked_out_rooms_exceed_limit': '加入房间数量已达上限，已断开当前直播间',
+  'global_event.back_to_home': '返回首页',
+};
