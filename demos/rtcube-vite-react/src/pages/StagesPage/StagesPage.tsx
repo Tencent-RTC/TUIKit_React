@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useUIKit } from '@tencentcloud/chat-uikit-react';
 import { Button } from '@tencentcloud/uikit-base-component-react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -13,15 +13,48 @@ import styles from './StagesPage.module.scss';
 
 function StagesPage() {
   const navigate = useNavigate();
-  const { logout, status } = useLoginState();
+  const { login, logout, status } = useLoginState();
   const { sceneId } = useParams();
   const { t } = useUIKit();
+  const [isRestoring, setIsRestoring] = useState(status !== 'success');
+  const restoreAttempted = useRef(false);
 
   useEffect(() => {
-    if (status !== 'success') {
-      navigate('/');
+    if (status === 'success') {
+      setIsRestoring(false);
+      return;
     }
-  }, []);
+
+    if (restoreAttempted.current) {
+      return;
+    }
+    restoreAttempted.current = true;
+
+    const stored = localStorage.getItem('userInfo');
+    if (!stored) {
+      navigate('/', { replace: true });
+      return;
+    }
+
+    try {
+      const userInfo = JSON.parse(stored);
+      if (userInfo.SDKAppID && userInfo.userID && userInfo.userSig) {
+        login({
+          SDKAppID: userInfo.SDKAppID,
+          userID: userInfo.userID,
+          userSig: userInfo.userSig,
+        }).catch(() => {
+          localStorage.removeItem('userInfo');
+          navigate('/', { replace: true });
+        });
+      } else {
+        navigate('/', { replace: true });
+      }
+    } catch {
+      localStorage.removeItem('userInfo');
+      navigate('/', { replace: true });
+    }
+  }, [status]);
 
   const scenes = getEnabledScenes();
 
@@ -49,8 +82,12 @@ function StagesPage() {
 
   function handleLogout() {
     logout();
-    localStorage.removeItem('userinfo');
+    localStorage.removeItem('userInfo');
     navigate('/');
+  }
+
+  if (isRestoring) {
+    return null;
   }
 
   return (

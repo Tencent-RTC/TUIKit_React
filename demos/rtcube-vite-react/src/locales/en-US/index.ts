@@ -52,10 +52,28 @@ export const resource = {
   'scene.chat.tab.contact': 'Contacts',
   'scene.chat.drawer.settings': 'Settings',
   'scene.chat.drawer.search': 'Search',
+  'scene.chat.profile.edit': 'Edit',
+  'scene.chat.profile.dialogTitle': 'Edit Profile',
+  'scene.chat.profile.nicknameLabel': 'Nickname',
+  'scene.chat.profile.nicknamePlaceholder': 'Enter your nickname',
+  'scene.chat.profile.avatarUrlLabel': 'Avatar URL',
+  'scene.chat.profile.avatarUrlPlaceholder': 'Enter image URL',
+  'scene.chat.profile.avatarUrlHint': 'Avatar supports network URLs only. Please use an image URL starting with http or https.',
+  'scene.chat.profile.saveSuccess': 'Profile updated successfully',
+  'scene.chat.profile.saveFailed': 'Failed to update profile',
+  'scene.chat.profile.validation.nicknameRequired': 'Nickname cannot be empty',
+  'scene.chat.profile.validation.avatarUrlInvalid': 'Avatar URL must be a valid http/https URL',
   'scene.chat.placeholder.chat.title': 'No Messages',
   'scene.chat.placeholder.chat.description': 'Select a conversation to start chatting, or create a new conversation',
   'scene.chat.placeholder.contact.title': 'No Contacts',
   'scene.chat.placeholder.contact.description': 'Add friends to start chatting, or search for users',
+
+  // Scene - Chat Welcome Message
+  'scene.chat.welcome.title': 'Welcome to the Chat React desktop web demo~',
+  'scene.chat.welcome.guide': 'You can explore the core IM features in the following order:',
+  'scene.chat.welcome.step1': 'Send a text message in the input box.',
+  'scene.chat.welcome.step2': 'The toolbar above the input box supports voice calls, video calls, image, video and file sending, and more.',
+  'scene.chat.welcome.step3': 'To add a friend, go to the Contacts page and click "Add Friend/Group".',
 
   // Scene - Call
   'scene.call.title': '📞 Audio & Video Call',

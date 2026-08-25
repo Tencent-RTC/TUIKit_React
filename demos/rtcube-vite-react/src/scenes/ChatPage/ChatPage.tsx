@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   ConversationList,
   Chat,
@@ -10,7 +10,7 @@ import {
   ContactList,
   ContactInfo,
   useUIKit,
-  useConversationListState,
+  useChatContext,
 } from '@tencentcloud/chat-uikit-react';
 import { TUICallKit } from '@trtc/calls-uikit-react';
 import cs from 'classnames';
@@ -18,18 +18,47 @@ import styles from './ChatPage.module.scss';
 import { SideTab, PlaceholderEmpty, ChatHeader } from './components';
 import type { TabKey } from './components';
 
+// The conversation the GitHub demo opens by default.
+// This prop is injected into <Chat> by publish-github.js, so the welcome
+// message is only sent when the default conversation is actually opened.
+const DEFAULT_OPEN_CONVERSATION_ID = 'C2Cadministrator';
+
 function ChatPage() {
   const { t, theme } = useUIKit();
-  const { activeConversation, setActiveConversation } = useConversationListState();
+  const { activeConversation, sendMessage } = useChatContext();
+  // Send the welcome message only once per app session
+  const sendWelcomeMessageOnce = useRef(false);
+
+  // Send the welcome message once when the default conversation opens;
+  // switching conversations afterwards will not send it again.
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (
+        activeConversation?.conversationID === DEFAULT_OPEN_CONVERSATION_ID
+        && !sendWelcomeMessageOnce.current
+      ) {
+        const welcomeText = [
+          t('scene.chat.welcome.title'),
+          '',
+          t('scene.chat.welcome.guide'),
+          `1. ${t('scene.chat.welcome.step1')}`,
+          `2. ${t('scene.chat.welcome.step2')}`,
+          `3. ${t('scene.chat.welcome.step3')}`,
+        ].join('\n');
+        sendMessage({
+          type: 'textMessage',
+          text: welcomeText,
+        });
+        sendWelcomeMessageOnce.current = true;
+      }
+    }, 1000);
+    return () => clearTimeout(timer);
+    // Only needs to run when the active conversation changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeConversation?.conversationID]);
   const [activeTab, setActiveTab] = useState<TabKey>('conversation');
   const [isChatSettingShow, setChatSettingShow] = useState(false);
   const [isSearchInChatShow, setSearchInChatShow] = useState(false);
-
-  useLayoutEffect(() => {
-    // default open a c2c conversation, you can change it.
-    const peerUserID = 'administrator';
-    setActiveConversation(`C2C${peerUserID}`);
-  }, []);
 
   useEffect(() => {
     setChatSettingShow(false);
@@ -41,7 +70,7 @@ function ChatPage() {
   };
 
   return (
-    <div className={cs(styles['chat-layout'], { 'dark': theme === 'dark' })}>
+    <div className={cs(styles['chat-layout'], { dark: theme === 'dark' })}>
       <TUICallKit className={styles['call-kit']} />
 
       {/* SideTab Navigation */}
@@ -55,40 +84,26 @@ function ChatPage() {
         {activeTab === 'contact' && <ContactList />}
       </div>
 
-      {/* Chat Content Panel */}
+      {/* Chat Content Panel + Search Panel Container */}
       {activeTab === 'conversation' && (
-        <Chat
-          PlaceholderEmpty={<PlaceholderEmpty type="chat" />}
-          className={styles['chat-content-panel']}
-        >
-          <ChatHeader
-            onMenuClick={() => setChatSettingShow(!isChatSettingShow)}
-            onSearchClick={() => setSearchInChatShow(!isSearchInChatShow)}
-          />
-          <MessageList />
-          <MessageInput />
+        <div className={styles['chat-with-search']}>
+          <Chat
+            PlaceholderEmpty={<PlaceholderEmpty type="chat" />}
+            className={styles['chat-content-panel']}
+          >
+            <ChatHeader
+              onMenuClick={() => setChatSettingShow(!isChatSettingShow)}
+              onSearchClick={() => setSearchInChatShow(!isSearchInChatShow)}
+            />
+            <MessageList enableReadReceipt />
+            <MessageInput />
+          </Chat>
 
-          {/* Chat Setting Sidebar */}
-          {isChatSettingShow && (
-            <div className={cs(styles['chat-sidebar'], { [styles.dark]: theme === 'dark' })}>
-              <div className={styles['chat-sidebar__header']}>
-                <span className={styles['chat-sidebar__title']}>{t('scene.chat.drawer.settings')}</span>
-                <button
-                  className={styles['icon-button']}
-                  onClick={() => setChatSettingShow(false)}
-                >
-                  ✕
-                </button>
-              </div>
-              <ChatSetting />
-            </div>
-          )}
-
-          {/* Search in Chat Sidebar */}
+          {/* Search in Chat Panel (side-by-side with chat, not overlapping) */}
           {isSearchInChatShow && (
-            <div className={cs(styles['chat-sidebar'], { [styles.dark]: theme === 'dark' })}>
-              <div className={styles['chat-sidebar__header']}>
-                <span className={styles['chat-sidebar__title']}>{t('scene.chat.drawer.search')}</span>
+            <div className={cs(styles['search-panel'], { [styles.dark]: theme === 'dark' })}>
+              <div className={styles['search-panel__header']}>
+                <span className={styles['search-panel__title']}>{t('scene.chat.drawer.search')}</span>
                 <button
                   className={styles['icon-button']}
                   onClick={() => setSearchInChatShow(false)}
@@ -96,10 +111,17 @@ function ChatPage() {
                   ✕
                 </button>
               </div>
-              <Search style={{ minWidth: '300px' }} variant={VariantType.EMBEDDED} />
+              <Search variant={VariantType.EMBEDDED} />
             </div>
           )}
-        </Chat>
+
+          {/* Chat Setting Sidebar (overlay on the entire chat-with-search area) */}
+          {isChatSettingShow && (
+            <div className={cs(styles['chat-sidebar'], { [styles.dark]: theme === 'dark' })}>
+              <ChatSetting onClose={() => setChatSettingShow(false)} />
+            </div>
+          )}
+        </div>
       )}
 
       {/* Contact Detail Panel */}

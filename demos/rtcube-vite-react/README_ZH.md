@@ -10,6 +10,16 @@
 
 [点击这里，立即体验 AI 集成](https://cloud.tencent.com/document/product/269/124481)
 
+## 🚀 推荐：仅查看 Chat UIKit
+
+RTCube 项目是一个全面展示 RTC 场景下多产品能力的示例工程，包括 Chat、Call、Room 等产品的示例代码。
+
+如果您只想要查看 Chat 产品能力，可以 clone [rtc-chat-web](https://gitee.com/tencent-cloud-uikit/rtc-chat-web) 项目：
+
+```bash
+git clone https://gitee.com/tencent-cloud-uikit/rtc-chat-web.git
+```
+
 ## 项目说明
 
 本项目演示了如何将腾讯云 Chat UIKit 集成到 React 应用中，提供以下功能场景：

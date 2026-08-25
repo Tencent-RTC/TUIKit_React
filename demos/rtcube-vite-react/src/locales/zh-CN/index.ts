@@ -52,10 +52,28 @@ export const resource = {
   'scene.chat.tab.contact': '通讯录',
   'scene.chat.drawer.settings': '设置',
   'scene.chat.drawer.search': '搜索',
+  'scene.chat.profile.edit': '编辑',
+  'scene.chat.profile.dialogTitle': '修改个人资料',
+  'scene.chat.profile.nicknameLabel': '昵称',
+  'scene.chat.profile.nicknamePlaceholder': '请输入昵称',
+  'scene.chat.profile.avatarUrlLabel': '头像 URL',
+  'scene.chat.profile.avatarUrlPlaceholder': '请输入头像图片链接',
+  'scene.chat.profile.avatarUrlHint': '头像仅支持网络 URL，请使用 http 或 https 开头的图片地址。',
+  'scene.chat.profile.saveSuccess': '个人资料更新成功',
+  'scene.chat.profile.saveFailed': '个人资料更新失败',
+  'scene.chat.profile.validation.nicknameRequired': '昵称不能为空',
+  'scene.chat.profile.validation.avatarUrlInvalid': '头像 URL 仅支持 http/https 网络地址',
   'scene.chat.placeholder.chat.title': '暂无消息',
   'scene.chat.placeholder.chat.description': '选择一个对话开始聊天，或创建新的对话',
   'scene.chat.placeholder.contact.title': '暂无联系人',
   'scene.chat.placeholder.contact.description': '添加好友开始聊天，或搜索用户',
+
+  // Scene - Chat Welcome Message
+  'scene.chat.welcome.title': '欢迎体验 Chat React 桌面端WEB应用 Demo～',
+  'scene.chat.welcome.guide': '您可以按照以下顺序体验 IM 的核心功能：',
+  'scene.chat.welcome.step1': '在输入框内发送一条文本消息。',
+  'scene.chat.welcome.step2': '输入框上的工具栏支持语音通话、视频通话、图片、视频、文件发送等扩展功能。',
+  'scene.chat.welcome.step3': '如果您想添加好友，可以前往联系人页面点击"添加好友/群聊"。',
 
   // Scene - Call
   'scene.call.title': '📞 音视频通话',
