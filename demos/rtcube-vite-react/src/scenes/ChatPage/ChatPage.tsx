@@ -87,7 +87,7 @@ function ChatPage() {
       {/* Chat Content Panel + Search Panel Container */}
       {activeTab === 'conversation' && (
         <div className={styles['chat-with-search']}>
-          <Chat
+          <Chat conversationID="C2Cadministrator"
             PlaceholderEmpty={<PlaceholderEmpty type="chat" />}
             className={styles['chat-content-panel']}
           >
