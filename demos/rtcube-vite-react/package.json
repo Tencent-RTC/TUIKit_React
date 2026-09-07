@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@tencentcloud/chat-uikit-react": "latest",
-    "@tencentcloud/uikit-base-component-react": "~1.4.1",
+    "@tencentcloud/uikit-base-component-react": "~1.4.2",
     "@trtc/calls-uikit-react": "latest",
     "tuikit-atomicx-react": "latest",
     "classnames": "^2.5.1",
