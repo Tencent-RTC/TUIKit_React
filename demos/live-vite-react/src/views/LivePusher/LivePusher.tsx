@@ -20,6 +20,7 @@ import {
   BarrageList,
   LiveAudienceList,
   LiveListEvent,
+  LiveScenePanel,
   StreamMixer,
   useBarrageState,
   useDeviceState,
@@ -41,7 +42,6 @@ import {
   SettingButton,
   SpeakerVolumeSetting,
 } from '@/components/LivePusherControls';
-import { LiveScenePanel } from '@/components/LiveScenePanel';
 import { STORAGE_KEYS } from '@/constants';
 import { copyToClipboard, initRoomEngineLanguage } from '@/utils';
 import styles from './LivePusher.module.scss';
