@@ -9,8 +9,8 @@
   flex-direction: column;
   padding: 16px;
   box-sizing: border-box;
-  background: var(--bg-color-topbar);
-  color: var(--text-color-primary);
+  background: var(--uikit-bg-color-topbar);
+  color: var(--uikit-text-color-primary);
 
   .live-pusher-page__header {
     margin-bottom: 8px;
@@ -40,7 +40,7 @@
 .main-right-bottom,
 .main-center-top,
 .main-center-bottom {
-  background: var(--bg-color-operate);
+  background: var(--uikit-bg-color-operate);
 }
 
 .main-left-top {
@@ -61,7 +61,7 @@
   box-sizing: border-box;
   padding-bottom: 16px;
   border-bottom: 1px solid var(--uikit-stroke-color-primary, #3a3c42);
-  color: var(--text-color-primary);
+  color: var(--uikit-text-color-primary);
   margin-bottom: 16px;
 }
 
@@ -75,7 +75,7 @@
   font-size: 16px;
   font-weight: 400;
   line-height: 24px;
-  color: var(--text-color-secondary);
+  color: var(--uikit-text-color-secondary);
 }
 
 .icon-back {
@@ -125,41 +125,29 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: var(--text-color-primary);
+  color: var(--uikit-text-color-primary);
 }
 
 .copy-icon {
   cursor: pointer;
-  color: var(--text-color-primary);
+  color: var(--uikit-text-color-primary);
 
   &:hover {
-    color: var(--text-color-link);
+    color: var(--uikit-text-color-link);
   }
 }
 
 .main-center-top-right {
   font-size: 12px;
   line-height: 18px;
-  color: var(--text-color-primary);
+  color: var(--uikit-text-color-primary);
 }
 
 .main-center-center {
   flex: 1;
+  min-width: 0;
   min-height: 0;
-  overflow: hidden;
-  // Align with Vue3: the preview BOX itself is aspect-ratio-locked and
-  // paints black internally. The wrapping slot must NOT have its own
-  // black background, otherwise an orientation switch visually does
-  // nothing - the inner preview does shrink to a 9:16 rectangle but the
-  // surrounding slot stays black, so the viewer cannot tell that
-  // anything changed.
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  :global(#atomicx-live-player-container > :nth-child(2)) {
-    display: none !important;
-  }
+  color: #131417;
 }
 
 .main-center-bottom {
@@ -238,7 +226,7 @@
 .pusher-audience-list {
   margin-top: 2px;
   border-radius: 8px;
-  background: var(--bg-color-operate);
+  background: var(--uikit-bg-color-operate);
 }
 
 .message-list-container {
@@ -249,7 +237,7 @@
 }
 
 .pusher-barrage-list {
-  background: var(--bg-color-operate);
+  background: var(--uikit-bg-color-operate);
 }
 
 .message-input-container {
@@ -257,7 +245,7 @@
 }
 
 .pusher-barrage-input {
-  background: var(--bg-color-operate);
+  background: var(--uikit-bg-color-operate);
 
   // Align input content vertically with the emoji icon (match Vue demo
   // behavior).
@@ -295,7 +283,7 @@
   flex-shrink: 0;
   white-space: nowrap;
   font-size: 14px;
-  color: var(--text-color-primary);
+  color: var(--uikit-text-color-primary);
 }
 
 .live-name-dialog-input {

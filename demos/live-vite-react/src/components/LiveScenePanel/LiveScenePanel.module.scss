@@ -38,7 +38,7 @@
   justify-content: center;
   height: 100%;
   width: 100%;
-  color: var(--text-color-secondary);
+  color: var(--uikit-text-color-secondary);
   font-size: 14px;
   line-height: 22px;
   font-weight: 500;
@@ -64,7 +64,7 @@
   height: 40px;
   border-radius: 20px;
   background: #383f4d;
-  color: var(--text-color-primary);
+  color: var(--uikit-text-color-primary);
   font-size: 12px;
   font-weight: 400;
   cursor: pointer;
@@ -105,7 +105,7 @@
   border-radius: 20px;
   border: none !important;
   background: #383f4d !important;
-  color: var(--text-color-primary) !important;
+  color: var(--uikit-text-color-primary) !important;
   font-size: 12px;
   font-weight: 400;
   margin-top: 24px;
@@ -185,7 +185,7 @@
 .material-name {
   font-size: 14px;
   font-weight: 400;
-  color: var(--text-color-primary);
+  color: var(--uikit-text-color-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

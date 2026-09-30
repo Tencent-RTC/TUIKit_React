@@ -55,7 +55,7 @@
 .audio-level {
   display: block;
   width: 100%;
-  background-color: var(--text-color-success);
+  background-color: var(--uikit-text-color-success);
   transition: height 0.2s;
 }
 
@@ -186,7 +186,7 @@
 
 .layout-label {
   margin: 4px 0 16px;
-  color: var(--text-color-primary, #ffffff);
+  color: var(--uikit-text-color-primary, #ffffff);
   font-size: 14px;
 }
 
@@ -215,8 +215,8 @@
   }
 
   &.active {
-    border-color: var(--text-color-link-hover, #2b6ad6);
-    background: var(--list-color-focused, #243047);
+    border-color: var(--uikit-text-color-link-hover, #2b6ad6);
+    background: var(--uikit-list-color-focused, #243047);
   }
 }
 

@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useLoginState, Avatar, useLiveListState } from 'tuikit-atomicx-react';
 import { STORAGE_KEYS } from '@/constants';
-import { safelyParse } from '@/utils';
+import { safelyParse, markLogoutIntent } from '@/utils';
 import styles from './LiveHeader.module.scss';
 import type { UserInfo } from '@/types';
 
@@ -47,8 +47,17 @@ const LiveHeader: React.FC<LiveHeaderProps> = ({ loginButtonVisible = true, clas
   }, [login, navigate, location.pathname]);
 
   const handleLogout = useCallback(() => {
-    const proceedLogout = () => {
-      logout();
+    const proceedLogout = async () => {
+      // Announce intent BEFORE calling logout(). The SDK synchronously
+      // pushes loginStatus from 'success' to 'idle' inside logout(),
+      // which fires the login-status watcher in `useGlobalEventDialogs`.
+      // Without the intent flag that watcher can't tell "user clicked
+      // 退出" apart from "SDK kicked the account offline" and shows
+      // the 「账号在其他设备登录」dialog on every manual logout.
+      // Marking the intent first lets the watcher consume + suppress
+      // its own dialog for this transition only. See utils/logoutIntent.
+      markLogoutIntent();
+      await logout();
       sessionStorage.removeItem(STORAGE_KEYS.USER_INFO);
       navigate(`/login?from=${encodeURIComponent(location.pathname)}`);
     };

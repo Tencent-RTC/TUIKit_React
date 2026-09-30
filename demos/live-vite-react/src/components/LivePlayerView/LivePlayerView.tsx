@@ -2,7 +2,7 @@ import type React from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { IconChevronLeft, IconUser, useUIKit, Button, Toast } from '@tencentcloud/uikit-base-component-react';
 import { useNavigate } from 'react-router-dom';
-import { Avatar, LiveView, LiveGift, LiveListEvent, BarrageList, BarrageInput, LiveAudienceList, useLiveListState, useLiveAudienceState, useLoginState } from 'tuikit-atomicx-react';
+import { Avatar, LiveView, LiveGift, LiveListEvent, LiveSeatEvent, BarrageList, BarrageInput, LiveAudienceList, useLiveListState, useLiveAudienceState, useLiveSeatState, useLoginState } from 'tuikit-atomicx-react';
 import LiveEndedIcon from '../../assets/live-ended.svg';
 import styles from './LivePlayerView.module.scss';
 
@@ -57,6 +57,42 @@ const LivePlayerView: React.FC<LivePlayerViewProps> = ({ className, joinFailed }
     }
     prevMutedRef.current = isMessageMuted;
   }, [isMessageMuted, t]);
+
+  // Mic/camera host-control detection: surface a toast whenever the host
+  // disables or restores the current user's microphone/camera permission
+  // while on-seat. Backed by LiveSeatState's dedicated events, which
+  // already filter by the local user and the admin-initiated cause —
+  // no SDK-level listener or reason check needed here.
+  //
+  // Note: restoring permission does NOT auto-open the device — the user
+  // must turn it on manually, which is reflected in the toast wording.
+  const { subscribeEvent: subscribeSeatEvent, unsubscribeEvent: unsubscribeSeatEvent } = useLiveSeatState();
+  useEffect(() => {
+    const handleLocalMicrophoneClosedByAdmin = () => {
+      Toast.info({ message: t('live_player_view.your_microphone_permission_disabled_by_host') });
+    };
+    const handleLocalCameraClosedByAdmin = () => {
+      Toast.info({ message: t('live_player_view.your_camera_permission_disabled_by_host') });
+    };
+    const handleLocalMicrophoneOpenedByAdmin = () => {
+      Toast.info({ message: t('live_player_view.your_microphone_permission_restored_by_host') });
+    };
+    const handleLocalCameraOpenedByAdmin = () => {
+      Toast.info({ message: t('live_player_view.your_camera_permission_restored_by_host') });
+    };
+
+    subscribeSeatEvent(LiveSeatEvent.ON_LOCAL_MICROPHONE_CLOSED_BY_ADMIN, handleLocalMicrophoneClosedByAdmin);
+    subscribeSeatEvent(LiveSeatEvent.ON_LOCAL_CAMERA_CLOSED_BY_ADMIN, handleLocalCameraClosedByAdmin);
+    subscribeSeatEvent(LiveSeatEvent.ON_LOCAL_MICROPHONE_OPENED_BY_ADMIN, handleLocalMicrophoneOpenedByAdmin);
+    subscribeSeatEvent(LiveSeatEvent.ON_LOCAL_CAMERA_OPENED_BY_ADMIN, handleLocalCameraOpenedByAdmin);
+
+    return () => {
+      unsubscribeSeatEvent(LiveSeatEvent.ON_LOCAL_MICROPHONE_CLOSED_BY_ADMIN, handleLocalMicrophoneClosedByAdmin);
+      unsubscribeSeatEvent(LiveSeatEvent.ON_LOCAL_CAMERA_CLOSED_BY_ADMIN, handleLocalCameraClosedByAdmin);
+      unsubscribeSeatEvent(LiveSeatEvent.ON_LOCAL_MICROPHONE_OPENED_BY_ADMIN, handleLocalMicrophoneOpenedByAdmin);
+      unsubscribeSeatEvent(LiveSeatEvent.ON_LOCAL_CAMERA_OPENED_BY_ADMIN, handleLocalCameraOpenedByAdmin);
+    };
+  }, [subscribeSeatEvent, unsubscribeSeatEvent, t]);
 
   // Kicked-out-of-live dialogs are now handled globally by
   // useGlobalEventDialogs() in ProtectedRoute.
@@ -137,7 +173,9 @@ const LivePlayerView: React.FC<LivePlayerViewProps> = ({ className, joinFailed }
                   src={currentLive?.liveOwner?.avatarUrl}
                   size={32}
                 />
-                <span>{currentLive?.liveOwner?.userName || currentLive?.liveOwner?.userId}</span>
+                <span className={styles.livePlayerView__headerName}>
+                  {currentLive?.liveOwner?.userName || currentLive?.liveOwner?.userId}
+                </span>
               </>
             )}
           </div>
