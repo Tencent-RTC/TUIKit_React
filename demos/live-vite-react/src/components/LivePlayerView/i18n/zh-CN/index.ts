@@ -10,4 +10,8 @@ export const resource = {
   'live_player_view.live_ended': '直播已结束',
   'live_player_view.you_have_been_muted': '当前房间内，您已被禁言',
   'live_player_view.you_have_been_unmuted': '当前房间内，您已被解除禁言',
+  'live_player_view.your_microphone_permission_disabled_by_host': '主播已关闭您的麦克风权限',
+  'live_player_view.your_camera_permission_disabled_by_host': '主播已关闭您的摄像头权限',
+  'live_player_view.your_microphone_permission_restored_by_host': '主播已恢复您的麦克风权限，请手动开启麦克风',
+  'live_player_view.your_camera_permission_restored_by_host': '主播已恢复您的摄像头权限，请手动开启摄像头',
 };

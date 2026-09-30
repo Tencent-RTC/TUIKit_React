@@ -10,4 +10,8 @@ export const resource = {
   'live_player_view.live_ended': 'Live is ended',
   'live_player_view.you_have_been_muted': 'You have been muted in this room',
   'live_player_view.you_have_been_unmuted': 'You have been unmuted in this room',
+  'live_player_view.your_microphone_permission_disabled_by_host': 'Your microphone permission has been disabled by the host',
+  'live_player_view.your_camera_permission_disabled_by_host': 'Your camera permission has been disabled by the host',
+  'live_player_view.your_microphone_permission_restored_by_host': 'The host has restored your microphone permission. Please turn on the microphone manually.',
+  'live_player_view.your_camera_permission_restored_by_host': 'The host has restored your camera permission. Please turn on the camera manually.',
 };

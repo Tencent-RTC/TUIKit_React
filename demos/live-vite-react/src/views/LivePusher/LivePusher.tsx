@@ -15,18 +15,21 @@ import {
   useUIKit,
 } from '@tencentcloud/uikit-base-component-react';
 import {
+  BarrageEvent,
   BarrageInput,
   BarrageList,
   LiveAudienceList,
   LiveListEvent,
+  StreamMixer,
+  useBarrageState,
   useDeviceState,
   useLiveAudienceState,
   useLiveListState,
   useLoginState,
   useRoomEngine,
 } from 'tuikit-atomicx-react';
+import type { Barrage } from 'tuikit-atomicx-react';
 import { LiveHeader } from '@/components/LiveHeader';
-import { LocalMixerPreview } from '@/components/LocalMixerPreview';
 // NOTE: `LayoutSwitch` is intentionally NOT imported here. React 端目前不
 // 支持连麦 / 连线，因此布局切换入口暂无业务场景，先从底部栏隐藏。
 // 组件实现仍保留在 `@/components/LivePusherControls/LayoutSwitch.tsx`
@@ -61,6 +64,12 @@ const LivePusher: React.FC = () => {
     subscribeEvent,
     unsubscribeEvent,
   } = useLiveListState();
+  // Custom-message subscription channel — used to surface server-side
+  // moderation tips while the host is on-air (see effect below).
+  const {
+    subscribeEvent: subscribeBarrageEvent,
+    unsubscribeEvent: unsubscribeBarrageEvent,
+  } = useBarrageState();
 
   const [loading, setLoading] = useState(false);
   const [draftLiveName, setDraftLiveName] = useState('');
@@ -94,9 +103,9 @@ const LivePusher: React.FC = () => {
 
   const openMicAndStartPublish = useCallback(async () => {
     // Only the local microphone is opened here. Publishing the mixed video
-    // stream is driven exclusively by LocalMixerPreview, which watches
-    // currentLive.liveId and calls startPublish/stopPublish through a
-    // serialized task chain. Calling startPublish() here as well caused
+    // stream is driven exclusively by StreamMixer, which watches
+    // currentLive.liveId and calls startPublish/stopPublish on each
+    // change. Calling startPublish() here as well caused
     // re-entrant publishes that left the mixer plugin in a half-started
     // state, so only the first media source (typically the camera) was
     // ever delivered to remote viewers and any source added afterwards
@@ -143,7 +152,7 @@ const LivePusher: React.FC = () => {
       });
       // After startLive() the room exists on the server side but the
       // host has not entered it yet. Without joinLive(), the
-      // mediaSourceManager.startPublish() call that LocalMixerPreview
+      // mediaSourceManager.startPublish() call that StreamMixer
       // kicks off as soon as currentLive.liveId flips on has nowhere
       // to actually push the mixVideoTrack - the audience side ends
       // up falling back to the raw camera track and never reflects
@@ -160,9 +169,20 @@ const LivePusher: React.FC = () => {
       if (ownerRoomExists) {
         await doJoinAndOpenMic(liveId);
       } else {
+        // Detect IM content-security rejection (error_code: 100026).
+        // This fires when the liveName triggers the backend's sensitive-word
+        // filter — the generic error message is unhelpful, so surface a
+        // targeted prompt telling the user to change the name.
+        const isSecurityCheckFail =
+          typeof error?.message === 'string'
+          && (error.message.includes('error_code:100026')
+            || error.message.includes('group info secure check fail'));
+
         MessageBox.alert({
           title: t('live_pusher.start_live_failed_title'),
-          content: t('live_pusher.start_live_failed_content'),
+          content: isSecurityCheckFail
+            ? t('live_pusher.start_live_name_security_failed')
+            : t('live_pusher.start_live_failed_content'),
           confirmText: t('live_pusher.confirm'),
           showClose: false,
           modal: true,
@@ -270,8 +290,17 @@ const LivePusher: React.FC = () => {
           roomId: currentLive.liveId,
           name: nextName,
         });
-      } catch (error) {
-        Toast.error({ message: t('live_pusher.update_live_name_failed') });
+      } catch (error: any) {
+        const isSecurityCheckFail =
+          typeof error?.message === 'string'
+          && (error.message.includes('error_code:100026')
+            || error.message.includes('group info secure check fail'));
+
+        Toast.error({
+          message: isSecurityCheckFail
+            ? t('live_pusher.start_live_name_security_failed')
+            : t('live_pusher.update_live_name_failed'),
+        });
         return;
       } finally {
         setLoading(false);
@@ -370,6 +399,28 @@ const LivePusher: React.FC = () => {
     };
   }, [subscribeEvent, t, unsubscribeEvent]);
 
+  // Server-side moderation tips: when the audit pipeline flags the
+  // host's current frame or speech as risky, the backend pushes a
+  // custom message with `businessId === 'violation_alert'`. We surface
+  // a transient warning Toast so the host can self-correct before the
+  // stream is force-closed. Mirrors the Vue3 demo's
+  // `BarrageEvent.onCustomMessageReceived` wiring in LivePusherView.
+  useEffect(() => {
+    const handleCustomMessageReceived = (barrage: Barrage) => {
+      if (barrage.businessId !== 'violation_alert') {
+        return;
+      }
+      Toast.warning({
+        message: t('live_pusher.violation_alert'),
+        duration: 3000,
+      });
+    };
+    subscribeBarrageEvent(BarrageEvent.onCustomMessageReceived, handleCustomMessageReceived);
+    return () => {
+      unsubscribeBarrageEvent(BarrageEvent.onCustomMessageReceived, handleCustomMessageReceived);
+    };
+  }, [subscribeBarrageEvent, t, unsubscribeBarrageEvent]);
+
   useEffect(() => {
     TUIRoomEngine.once('ready', () => {
       TUIRoomEngine.callExperimentalAPI(JSON.stringify({
@@ -433,7 +484,7 @@ const LivePusher: React.FC = () => {
           </div>
 
           <div className={styles['main-center-center']}>
-            <LocalMixerPreview />
+            <StreamMixer />
           </div>
 
           <div className={styles['main-center-bottom']}>
@@ -528,7 +579,7 @@ const LivePusher: React.FC = () => {
               className={styles['live-name-dialog-input']}
               value={editingLiveName}
               placeholder={t('live_pusher.live_name_input_placeholder')}
-              maxLength={100}
+              maxLength={30}
               autoFocus
               spellcheck={false}
               onChange={(event) => setEditingLiveName(event.target.value)}

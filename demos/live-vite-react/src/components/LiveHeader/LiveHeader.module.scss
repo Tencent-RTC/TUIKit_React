@@ -26,7 +26,13 @@
     .live-header__title {
       font-size: 18px;
       font-weight: 600;
-      color: var(--text-color-primary);
+      // React base publishes design tokens with the `--uikit-` prefix
+      // (see base/.../global.scss). Vue base publishes the same tokens
+      // without a prefix. The previous `var(--text-color-primary)` was
+      // unresolved in this demo (light theme had no fallback color),
+      // making the header text effectively invisible. Use the React-native
+      // prefixed variable to keep visual parity with Vue.
+      color: var(--uikit-text-color-primary);
     }
   }
 
@@ -43,15 +49,19 @@
       font-size: 14px;
       font-weight: 400;
       line-height: 22px;
-      color: var(--text-color-primary);
+      color: var(--uikit-text-color-primary);
+      max-width: 180px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     :global(.tui-button) {
-      color: var(--text-color-primary);
+      color: var(--uikit-text-color-primary);
     }
 
     .live-header__logout-button {
-      color: var(--text-color-link) !important;
+      color: var(--uikit-text-color-link) !important;
     }
   }
 }

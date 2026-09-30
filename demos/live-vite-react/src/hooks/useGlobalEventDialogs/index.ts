@@ -4,6 +4,7 @@ import { MessageBox, useUIKit } from '@tencentcloud/uikit-base-component-react';
 import { useLoginState, useLiveListState, LiveListEvent, LiveKickedOutReason } from 'tuikit-atomicx-react';
 import type { LiveListEventInfo } from 'tuikit-atomicx-react';
 import { STORAGE_KEYS } from '@/constants';
+import { consumeLogoutIntent } from '@/utils';
 
 const KICKED_OUT_CONTENT_MAP: Partial<Record<LiveKickedOutReason, string>> = {
   [LiveKickedOutReason.BY_ADMIN]: 'global_event.kicked_out_by_admin',
@@ -55,26 +56,42 @@ export function useGlobalEventDialogs(): void {
     if (loginStatus === 'success') {
       wasLoggedInRef.current = true;
       hasShownKickDialogRef.current = false;
-    } else if (
-      wasLoggedInRef.current
-      && !hasShownKickDialogRef.current
-      && (loginStatus === 'idle' || loginStatus === 'error')
-    ) {
-      wasLoggedInRef.current = false;
-      hasShownKickDialogRef.current = true;
-
-      MessageBox.alert({
-        title: t('global_event.kicked_offline_title'),
-        content: t('global_event.kicked_offline_content'),
-        confirmText: t('global_event.back_to_login'),
-        showClose: false,
-        modal: true,
-        callback: () => {
-          sessionStorage.removeItem(STORAGE_KEYS.USER_INFO);
-          navigate('/login');
-        },
-      });
+      return;
     }
+    if (
+      !wasLoggedInRef.current
+      || hasShownKickDialogRef.current
+      || (loginStatus !== 'idle' && loginStatus !== 'error')
+    ) {
+      return;
+    }
+
+    // Flip the ref regardless of the outcome so we do NOT re-enter
+    // this branch until the next successful login. That way even the
+    // suppressed (user-initiated) path is single-shot.
+    wasLoggedInRef.current = false;
+    hasShownKickDialogRef.current = true;
+
+    // If the current success→idle transition was triggered by the
+    // user clicking "退出" (LiveHeader.handleLogout marks intent
+    // before calling logout()), swallow the alert — nothing was
+    // actually wrong. This has to check-and-clear atomically so a
+    // subsequent real kick can't reuse the same flag.
+    if (consumeLogoutIntent()) {
+      return;
+    }
+
+    MessageBox.alert({
+      title: t('global_event.kicked_offline_title'),
+      content: t('global_event.kicked_offline_content'),
+      confirmText: t('global_event.back_to_login'),
+      showClose: false,
+      modal: true,
+      callback: () => {
+        sessionStorage.removeItem(STORAGE_KEYS.USER_INFO);
+        navigate('/login');
+      },
+    });
   }, [loginStatus, navigate, t]);
 
   // ── 2. Kicked out of live room ─────────────────────────────────────
