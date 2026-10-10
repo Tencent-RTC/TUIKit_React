@@ -12,6 +12,12 @@ body,
   overflow: hidden;
 }
 
+/* `overflow: hidden` does not stop Safari's rubber-band drag of the whole page. */
+html,
+body {
+  overscroll-behavior: none;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
     'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',

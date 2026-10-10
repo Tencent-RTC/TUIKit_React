@@ -1,0 +1,30 @@
+.webrtc-unsupported-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.webrtc-unsupported-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: left;
+}
+
+.webrtc-unsupported-desc {
+  font-size: 14px;
+  line-height: 1.72;
+  color: var(--uikit-text-color-secondary);
+}
+
+.webrtc-unsupported-link {
+  font-size: 14px;
+  text-decoration: none;
+  color: var(--uikit-text-color-link);
+}
+
+.webrtc-unsupported-footnote {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--uikit-text-color-tertiary);
+}

@@ -1,0 +1,255 @@
+// SeatApplication (audience-side co-guest entry) styles, ported from the
+// Vue3 SeatApplicationButton / LiveConnectionTypeDialog /
+// LiveDeviceSelectionDialog scoped SCSS.
+
+.seatButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.seatButtonInner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 12px;
+  background: transparent;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    .seatIcon {
+      transform: scale(1.08);
+      filter: brightness(1.08) drop-shadow(0 4px 12px rgba(255, 255, 255, 0.45));
+    }
+  }
+}
+
+.seatIcon {
+  width: 32px;
+  height: 32px;
+  color: rgba(255, 255, 255, 0.75);
+  transition: color 0.15s ease, transform 0.2s ease, filter 0.2s ease;
+}
+
+.seatText {
+  font-size: 12px;
+  // Same color token as the gift bar's "More" label (liveGift__moreText),
+  // so both entries in the bottom bar read as one visual set.
+  color: var(--uikit-text-color-primary);
+  transition: color 0.15s ease;
+  white-space: nowrap;
+}
+
+// ── Connection type dialog ─────────────────────────────────────────────────
+.optionsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.optionCard {
+  box-sizing: border-box;
+  padding: 16px;
+  background: var(--uikit-bg-color-function, rgba(255, 255, 255, 0.06));
+  border: 2px solid transparent;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+
+  &:hover {
+    background: var(--uikit-list-color-hover, rgba(255, 255, 255, 0.1));
+    border-color: var(--uikit-stroke-color-module, rgba(255, 255, 255, 0.2));
+  }
+}
+
+.optionCardActive {
+  border-color: var(--uikit-text-color-link-hover, #4c8bf5);
+  background: var(--uikit-list-color-focused, rgba(76, 139, 245, 0.12));
+
+  .optionIcon {
+    color: var(--uikit-text-color-link-hover, #4c8bf5);
+  }
+
+  h4 {
+    color: var(--uikit-text-color-primary, #fff);
+    font-weight: 600;
+  }
+}
+
+.optionInfo {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+}
+
+.optionIcon {
+  width: 24px;
+  height: 24px;
+  color: var(--uikit-text-color-secondary, rgba(255, 255, 255, 0.6));
+  transition: color 0.2s ease;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+
+  :global(.tui-icon) {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+h4 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--uikit-text-color-primary, #fff);
+  transition: color 0.2s ease;
+}
+
+.dialogFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 20px;
+}
+
+// ── Device selection dialog ────────────────────────────────────────────────
+.deviceSelection {
+  padding: 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.videoPreviewContainer {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
+  background-color: var(--uikit-color-black-1, #000);
+  border-radius: 8px;
+  margin-bottom: 4px;
+}
+
+.videoPreview {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.attentionInfo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.offCameraInfo {
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 34px;
+  color: var(--uikit-text-color-secondary, rgba(255, 255, 255, 0.6));
+}
+
+.cameraPreviewFailure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  max-width: 360px;
+  text-align: center;
+  color: var(--uikit-text-color-secondary, rgba(255, 255, 255, 0.6));
+  font-size: 14px;
+  line-height: 20px;
+
+  strong {
+    color: var(--uikit-text-color-primary, #fff);
+    font-size: 16px;
+    font-weight: 500;
+  }
+}
+
+.loading {
+  animation: seat-application-loading-rotate 2s linear infinite;
+}
+
+.deviceItem {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.deviceLabel {
+  font-size: 14px;
+  color: var(--uikit-text-color-primary, #fff);
+  font-weight: 500;
+}
+
+.deviceSelect {
+  width: 100%;
+}
+
+.deviceEmptyTip {
+  font-size: 12px;
+  color: var(--uikit-text-color-secondary, rgba(255, 255, 255, 0.6));
+  margin-top: -8px;
+}
+
+.deviceEmptyDesc {
+  margin: 0;
+  font-size: 12px;
+  line-height: 20px;
+  color: var(--uikit-text-color-secondary, rgba(255, 255, 255, 0.6));
+}
+
+.deviceDialogFooter {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 20px;
+}
+
+.deviceRequirement {
+  flex: 1;
+  margin: 0;
+  color: var(--uikit-text-color-secondary, rgba(255, 255, 255, 0.6));
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.deviceFooterActions {
+  display: flex;
+  gap: 12px;
+}
+
+// Guidance dialog description (global class; the Dialog teleports to body).
+:global(.seat-application-guidance-desc) {
+  margin: 0;
+  color: var(--uikit-text-color-secondary, rgba(255, 255, 255, 0.6));
+  font-size: 14px;
+  line-height: 22px;
+}
+
+@keyframes seat-application-loading-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
