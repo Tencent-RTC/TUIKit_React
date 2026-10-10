@@ -1,62 +1,54 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { useUIKit } from '@tencentcloud/uikit-base-component-react';
-import { useLiveListState, useRoomEngine } from 'tuikit-atomicx-react';
+import React, { useCallback } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useLoginState } from 'tuikit-atomicx-react';
 import { LiveHeader } from '@/components/LiveHeader';
 import { LivePlayerView } from '@/components/LivePlayerView';
-import { initRoomEngineLanguage } from '../../utils';
+import { useAutoLogin } from '@/hooks';
+import { isMobile } from '@/utils/environment';
 import styles from './LivePlayer.module.scss';
-import TUIRoomEngine from '@tencentcloud/tuiroom-engine-js';
 
-const LivePlayer: React.FC = () => {
-  const [searchParams] = useSearchParams();
-  const { language } = useUIKit();
-  const { joinLive } = useLiveListState();
-  const roomEngine = useRoomEngine();
-  const isJoiningRef = useRef(false);
-  const [joinFailed, setJoinFailed] = useState(false);
+interface LivePlayerLayoutProps {
+  children: React.ReactNode;
+}
 
-  const handleJoinLive = useCallback(async (liveId: string) => {
-    if (isJoiningRef.current) {
-      return;
-    }
-    isJoiningRef.current = true;
-    try {
-      await initRoomEngineLanguage(language);
-      await joinLive({ liveId });
-    } catch (error) {
-      // Room doesn't exist or join failed — show the ended overlay so the
-      // user sees the same UI as when the host dismisses the room mid-stream.
-      console.error('[LivePlayer] Failed to join live room:', error);
-      isJoiningRef.current = false;
-      setJoinFailed(true);
-    }
-  }, [joinLive, language]);
-
-  useEffect(() => {
-    const liveId = searchParams.get('liveId');
-    if (!liveId) {
-      setJoinFailed(true);
-      return;
-    }
-
-    if (roomEngine.instance) {
-      handleJoinLive(liveId);
-    } else {
-      TUIRoomEngine.once('ready', () => {
-        handleJoinLive(liveId);
-      });
-    }
-  }, [searchParams, handleJoinLive, roomEngine.instance]);
-
-  return (<div className={styles.livePlayer}>
+const LivePlayerLayoutPC: React.FC<LivePlayerLayoutProps> = ({ children }) => (
+  <div className={styles.livePlayer}>
     <div className={styles.livePlayer__header}>
       <LiveHeader loginButtonVisible={false} />
     </div>
     <div className={styles.livePlayer__body}>
-      <LivePlayerView joinFailed={joinFailed} />
+      {children}
     </div>
-  </div>);
+  </div>
+);
+
+const LivePlayerLayoutH5: React.FC<LivePlayerLayoutProps> = ({ children }) => {
+  const { loginUserInfo } = useLoginState();
+  // The H5 page has no LiveHeader, so it restores the login session itself.
+  useAutoLogin();
+
+  if (!loginUserInfo?.userId) {
+    return null;
+  }
+  return <>{children}</>;
+};
+
+const LivePlayerLayout = isMobile ? LivePlayerLayoutH5 : LivePlayerLayoutPC;
+
+const LivePlayer: React.FC = () => {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const liveId = searchParams.get('liveId') || '';
+
+  const handleLeaveLive = useCallback(() => {
+    navigate('/live-list');
+  }, [navigate]);
+
+  return (
+    <LivePlayerLayout>
+      <LivePlayerView key={liveId} liveId={liveId} onLeaveLive={handleLeaveLive} />
+    </LivePlayerLayout>
+  );
 };
 
 export default LivePlayer;

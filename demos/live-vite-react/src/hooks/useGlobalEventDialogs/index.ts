@@ -1,10 +1,11 @@
 import { useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { MessageBox, useUIKit } from '@tencentcloud/uikit-base-component-react';
 import { useLoginState, useLiveListState, LiveListEvent, LiveKickedOutReason } from 'tuikit-atomicx-react';
 import type { LiveListEventInfo } from 'tuikit-atomicx-react';
 import { STORAGE_KEYS } from '@/constants';
 import { consumeLogoutIntent } from '@/utils';
+import { isMobile } from '@/utils/environment';
 
 const KICKED_OUT_CONTENT_MAP: Partial<Record<LiveKickedOutReason, string>> = {
   [LiveKickedOutReason.BY_ADMIN]: 'global_event.kicked_out_by_admin',
@@ -37,6 +38,8 @@ const KICKED_OUT_CONTENT_MAP: Partial<Record<LiveKickedOutReason, string>> = {
 export function useGlobalEventDialogs(): void {
   const { t } = useUIKit();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const isH5PlayerPage = isMobile && pathname === '/live-player';
   const { status: loginStatus } = useLoginState();
   const { subscribeEvent, unsubscribeEvent } = useLiveListState();
 
@@ -98,7 +101,11 @@ export function useGlobalEventDialogs(): void {
   // Covers all ON_KICKED_OUT_OF_LIVE reasons except BY_LOGGED_ON_OTHER_DEVICE
   // (which is already handled by the loginStatus transition above, and is
   // more timely + works on all pages, not just the player page).
+  // On the mobile player page the H5 LivePlayerView shows its own kicked-out dialog.
   useEffect(() => {
+    if (isH5PlayerPage) {
+      return undefined;
+    }
     const handleKickedOut = (eventInfo: LiveListEventInfo) => {
       const { reason } = eventInfo;
 
@@ -125,5 +132,5 @@ export function useGlobalEventDialogs(): void {
     return () => {
       unsubscribeEvent(LiveListEvent.ON_KICKED_OUT_OF_LIVE, handleKickedOut);
     };
-  }, [subscribeEvent, unsubscribeEvent, navigate, t]);
+  }, [isH5PlayerPage, subscribeEvent, unsubscribeEvent, navigate, t]);
 }

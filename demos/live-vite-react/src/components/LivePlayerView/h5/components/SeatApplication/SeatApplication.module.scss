@@ -1,0 +1,307 @@
+.seat-application-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #4086ff;
+  color: #fff;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+
+  &:active {
+    transform: scale(0.95);
+    opacity: 0.9;
+  }
+
+  &.is-applying {
+    background-color: #2ba471;
+  }
+
+  &.is-on-seat {
+    background-color: #e54545;
+  }
+}
+
+// Element-qualified to win over the generic sheet panel background.
+div.action-sheet {
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  background: #2a2d33;
+}
+
+.action-sheet-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 56px;
+  font-size: 16px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+
+  & + & {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  &:active {
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  &.is-danger {
+    color: #e54545;
+  }
+
+  &.is-cancel {
+    color: rgba(255, 255, 255, 0.6);
+  }
+}
+
+.connection-type-sheet {
+  padding: 0 16px calc(24px + env(safe-area-inset-bottom, 0));
+}
+
+.connection-type-header {
+  padding: 24px 16px;
+  text-align: center;
+  border-bottom: 1px solid var(--uikit-stroke-color-primary, rgba(255, 255, 255, 0.1));
+}
+
+.connection-type-title {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+}
+
+.connection-type-subtitle {
+  margin-top: 10px;
+  font-size: 12px;
+  line-height: 1;
+  color: var(--uikit-text-color-secondary, rgba(255, 255, 255, 0.55));
+}
+
+.connection-type-option {
+  display: flex;
+  align-items: center;
+  padding: 20px 0;
+  cursor: pointer;
+
+  & + & {
+    border-top: 1px solid var(--uikit-stroke-color-primary, rgba(255, 255, 255, 0.1));
+  }
+
+  &:active {
+    opacity: 0.6;
+  }
+}
+
+.connection-type-option-text {
+  margin-left: 8px;
+  font-size: 16px;
+  line-height: 22px;
+}
+
+.connection-type-option-adjust {
+  display: flex;
+  margin-left: auto;
+  padding: 4px;
+}
+
+.permission-primer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 16px 16px;
+  text-align: center;
+}
+
+.permission-primer-icons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  margin-bottom: 16px;
+  border-radius: 50%;
+  background: #4086ff;
+  color: #fff;
+
+  &.is-dual > * + * {
+    margin-left: 8px;
+  }
+}
+
+.permission-primer-title {
+  margin-bottom: 8px;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 24px;
+}
+
+.permission-primer-desc {
+  margin-bottom: 24px;
+  padding: 0 8px;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--uikit-text-color-secondary, rgba(255, 255, 255, 0.55));
+}
+
+.permission-primer-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 48px;
+  border-radius: 24px;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--uikit-text-color-secondary, rgba(255, 255, 255, 0.55));
+  cursor: pointer;
+
+  & + & {
+    margin-top: 12px;
+  }
+
+  &.is-primary {
+    background: #4086ff;
+    color: #fff;
+  }
+
+  &:active {
+    opacity: 0.8;
+  }
+}
+
+.device-open-failure {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 4px 16px 20px;
+}
+
+.device-open-failure-desc {
+  margin: 0;
+  font-size: 14px;
+  line-height: 22px;
+  color: var(--uikit-text-color-secondary, rgba(255, 255, 255, 0.55));
+}
+
+.video-adjust {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0 16px;
+
+  > * {
+    flex-shrink: 0;
+  }
+}
+
+.video-adjust-title {
+  padding: 16px 0;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  text-align: center;
+}
+
+.video-adjust-preview {
+  position: relative;
+  width: clamp(220px, 72vw, 360px);
+  max-width: 100%;
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: 16px;
+  background: #2a2d33;
+  // Make iOS Safari clip the SDK video element to the rounded corners.
+  transform: translateZ(0);
+
+  &::before {
+    content: '';
+    display: block;
+    padding-bottom: 100%;
+  }
+
+  &.is-loading {
+    background: #000;
+  }
+}
+
+.video-adjust-preview-view {
+  position: absolute;
+  inset: 0;
+}
+
+.video-adjust-preview-guidance {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px;
+  box-sizing: border-box;
+  background: rgba(0, 0, 0, 0.72);
+  text-align: center;
+
+  strong {
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  span {
+    font-size: 12px;
+    line-height: 18px;
+    color: var(--uikit-text-color-secondary, rgba(255, 255, 255, 0.55));
+  }
+}
+
+.video-adjust-control {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 64px;
+  height: 64px;
+  margin: 20px auto;
+  border-radius: 12px;
+  background: #2a2d33;
+  font-size: 12px;
+  cursor: pointer;
+
+  &:active {
+    opacity: 0.7;
+  }
+
+  &.is-disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+
+.video-adjust-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  padding-bottom: 24px;
+}
+
+.video-adjust-apply {
+  width: 100%;
+  height: 44px;
+  border-radius: 22px;
+}
+
+.video-adjust-tip {
+  font-size: 12px;
+  color: var(--uikit-text-color-secondary, rgba(255, 255, 255, 0.55));
+}

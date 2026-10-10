@@ -1,13 +1,14 @@
 import type React from 'react';
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useCallback } from 'react';
 import { Button, MessageBox, useUIKit } from '@tencentcloud/uikit-base-component-react';
 import classNames from 'classnames';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useLoginState, Avatar, useLiveListState } from 'tuikit-atomicx-react';
 import { STORAGE_KEYS } from '@/constants';
-import { safelyParse, markLogoutIntent } from '@/utils';
+import { useAutoLogin } from '@/hooks';
+import { markLogoutIntent } from '@/utils';
+import { isMobile } from '@/utils/environment';
 import styles from './LiveHeader.module.scss';
-import type { UserInfo } from '@/types';
 
 interface LiveHeaderProps {
   loginButtonVisible?: boolean;
@@ -18,33 +19,9 @@ const LiveHeader: React.FC<LiveHeaderProps> = ({ loginButtonVisible = true, clas
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useUIKit();
-  const { loginUserInfo, login, logout, status: loginStatus } = useLoginState();
+  const { loginUserInfo, logout } = useLoginState();
   const { currentLive, endLive, leaveLive } = useLiveListState();
-  const [loginLoading, setLoginLoading] = useState(false);
-  // Track whether auto-login has already been attempted to prevent infinite loops
-  // when the user is kicked offline (loginUserInfo gets cleared repeatedly).
-  const hasAttemptedLoginRef = useRef(false);
-
-  const handleLogin = useCallback(async () => {
-    try {
-      setLoginLoading(true);
-      const storedData = sessionStorage.getItem(STORAGE_KEYS.USER_INFO) || '{}';
-      const liveUserInfo = safelyParse(storedData) as UserInfo;
-      await login({
-        userID: liveUserInfo.userID,
-        userSig: liveUserInfo.userSig,
-        SDKAppID: Number(liveUserInfo.SDKAppID),
-        testEnv: localStorage.getItem('tuikit-live-env') === 'TestEnv',
-      });
-    } catch (error) {
-      console.error(error);
-      // Clear stored credentials so ProtectedRoute won't redirect back here.
-      sessionStorage.removeItem(STORAGE_KEYS.USER_INFO);
-      navigate(`/login?from=${encodeURIComponent(location.pathname)}`);
-    } finally {
-      setLoginLoading(false);
-    }
-  }, [login, navigate, location.pathname]);
+  const { loginLoading, handleLogin } = useAutoLogin();
 
   const handleLogout = useCallback(() => {
     const proceedLogout = async () => {
@@ -100,21 +77,6 @@ const LiveHeader: React.FC<LiveHeaderProps> = ({ loginButtonVisible = true, clas
     navigate(`/live-list${query}`);
   }, [navigate, location.search]);
 
-  // When the user is kicked offline, loginStatus transitions from 'success'
-  // to 'idle'. Set hasAttemptedLoginRef = true SYNCHRONOUSLY here (same
-  // component, same effect batch) to prevent the auto-login effect below
-  // from firing and creating a login→kick→login loop.
-  // The actual dialog UI is handled by useGlobalEventDialogs() in ProtectedRoute.
-  const wasLoggedInRef = useRef(false);
-  useEffect(() => {
-    if (loginStatus === 'success') {
-      wasLoggedInRef.current = true;
-    } else if (wasLoggedInRef.current && (loginStatus === 'idle' || loginStatus === 'error')) {
-      wasLoggedInRef.current = false;
-      hasAttemptedLoginRef.current = true;
-    }
-  }, [loginStatus]);
-
   const handleGotoPusher = useCallback(async () => {
     sessionStorage.setItem(STORAGE_KEYS.START_LIVE_CLICK_AT, String(Date.now()));
 
@@ -136,22 +98,6 @@ const LiveHeader: React.FC<LiveHeaderProps> = ({ loginButtonVisible = true, clas
 
   const isLiveListPage = location.pathname === '/live-list' || location.pathname === '/';
 
-  useEffect(() => {
-    if (loginUserInfo?.userId) {
-      // Login succeeded — reset the flag so a future manual login can work.
-      hasAttemptedLoginRef.current = false;
-      return;
-    }
-    // Only auto-login once. If login was already attempted (and failed, or
-    // the user was kicked offline), do not retry automatically to avoid an
-    // infinite login→kicked→login loop.
-    if (loginLoading || hasAttemptedLoginRef.current) {
-      return;
-    }
-    hasAttemptedLoginRef.current = true;
-    handleLogin();
-  }, [loginUserInfo?.userId, loginLoading, handleLogin]);
-
   return (
     <div className={classNames(styles['live-header'], className)}>
       <div className={styles['live-header__left']} onClick={handleHomeClick}>
@@ -159,7 +105,7 @@ const LiveHeader: React.FC<LiveHeaderProps> = ({ loginButtonVisible = true, clas
         <div className={styles['live-header__title']}>LiveKit</div>
       </div>
       <div className={styles['live-header__right']}>
-        {isLiveListPage && (
+        {isLiveListPage && !isMobile && (
           <Button
             type="primary"
             className={styles['live-header__start-live-button']}

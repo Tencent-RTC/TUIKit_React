@@ -1,4 +1,4 @@
-@use "../../styles/index.scss" as *;
+@use "../../../styles/index.scss" as *;
 
 .livePlayerView {
   display: flex;
@@ -114,11 +114,26 @@
     }
 
     .livePlayerView__giftContainer {
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
       width: 100%;
       padding: 6px 0;
       flex-shrink: 0;
       border-top: 1px solid var(--uikit-stroke-color-primary);
       background: var(--uikit-bg-color-operate);
+
+      // Audience-side seat application entry, right of the gift bar's
+      // "More" entry. The LiveGift root (width: 100%) is squeezed by this
+      // fixed-width sibling via default flex-shrink, and its internal
+      // max-display-gifts calculation follows the narrowed width.
+      .livePlayerView__seatApplication {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 84px;
+      }
 
       &.disabled {
         pointer-events: none;
@@ -182,4 +197,21 @@
       }
     }
   }
+}
+
+// ── Exit-while-co-guesting confirmation dialog ─────────────────────────────
+// NOTE: these rules must live at TOP LEVEL. The dialog teleports its content
+// to document.body, so nested selectors under `.livePlayerView` never match.
+// The actions row lives in the dialog footer (Vue3's `#footer` slot);
+// aligned with Vue3's `.action-buttons { display:flex; gap:10px }`.
+.livePlayerView__exitTip {
+  margin: 0;
+  color: var(--uikit-text-color-primary, #fff);
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.livePlayerView__exitActions {
+  display: flex;
+  gap: 10px;
 }

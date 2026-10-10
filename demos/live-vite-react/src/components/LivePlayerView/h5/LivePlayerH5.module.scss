@@ -1,0 +1,284 @@
+.live-player-h5 {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: #000;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.live-player-h5-top {
+  position: absolute;
+  top: 10px;
+  left: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 50px;
+}
+
+.live-player-h5-top-left {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  max-width: 65%;
+  margin-left: 4px;
+}
+
+.live-player-h5-back {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+}
+
+.live-player-h5-owner {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  padding: 5px 10px 5px 5px;
+  overflow: hidden;
+  border-radius: 25px;
+  background-color: rgba(0, 0, 0, 0.4);
+
+  span {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+}
+
+.live-player-h5-owner-avatar {
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+}
+
+.live-player-h5-top-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 10px;
+}
+
+.live-player-h5-audience {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  cursor: pointer;
+}
+
+.live-player-h5-audience-count {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 4px;
+  box-sizing: border-box;
+  border-radius: 12px;
+  font-size: 12px;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.live-player-h5-stream {
+  width: 100%;
+  height: 100%;
+
+  // LiveView top-aligns a portrait canvas on phones; the H5 viewer centers it.
+  :global(.uikit-liveView) {
+    align-items: center;
+  }
+}
+
+.live-player-h5-fullscreen-entry {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  z-index: 98;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.live-player-h5-pending-card {
+  position: absolute;
+  top: 90px;
+  right: 16px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+
+  &:active {
+    opacity: 0.8;
+  }
+}
+
+.live-player-h5-pending-text {
+  font-size: 12px;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.live-player-h5-pending-dots {
+  display: inline-block;
+  width: 1.5em;
+  text-align: left;
+
+  &::after {
+    content: '...';
+    animation: live-player-h5-dots 3s infinite steps(4, end);
+  }
+}
+
+.live-player-h5-audience-list {
+  min-height: 100%;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.live-player-h5-messages {
+  position: absolute;
+  left: 0;
+  bottom: 60px;
+  z-index: 99;
+  width: 260px;
+  // Browser toolbars shrink the visible height; `--barrage-max-height` keeps co-guest nicknames visible.
+  height: min(180px, 25%, var(--barrage-max-height, 180px));
+  overflow: hidden;
+
+  @media screen and (orientation: landscape) {
+    width: 400px;
+    height: min(100px, 25%, var(--barrage-max-height, 100px));
+  }
+
+  // BarrageList has no props for its empty placeholder, scrollbar or spacing.
+  :global(.uikit-barrageList__empty) {
+    display: none;
+  }
+
+  :global(.uikit-barrageList__container) {
+    gap: 12px;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  :global(.uikit-barrageList__chunk) {
+    gap: 12px;
+  }
+}
+
+.live-player-h5-bottom {
+  position: absolute;
+  // 10px design baseline plus the keyboard delta published from JS.
+  bottom: calc(10px + var(--keyboard-offset, 0px));
+  z-index: 101;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 48px;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+.live-player-h5-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 1 0 auto;
+
+  // Sibling margins instead of `gap` for iOS Safari < 14.5.
+  > * + * {
+    margin-left: 8px;
+  }
+}
+
+.live-player-h5-like {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #ff3b66;
+  color: #fff;
+  cursor: pointer;
+  user-select: none;
+
+  &:active {
+    transform: scale(0.95);
+    opacity: 0.9;
+  }
+}
+
+.live-player-h5-ended {
+  position: absolute;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  background-color: var(--uikit-bg-color-operate, #1f2024);
+  color: var(--uikit-text-color-primary, rgba(255, 255, 255, 0.9));
+}
+
+.live-player-h5-ended-title {
+  padding: 100px 0 50px;
+  font-size: 24px;
+}
+
+.live-player-h5-ended-name {
+  font-size: 16px;
+}
+
+.live-player-h5-ended-back {
+  margin-top: 40px;
+  min-width: 160px;
+}
+
+// The mobile Dialog colors footer buttons by :first-child / :last-child; this
+// selector must outrank its `[data-uikit-theme] .tui-dialog...` rules.
+:global([data-uikit-theme]) .live-player-h5-exit-dialog:global(.tui-dialog.tui-dialog-container-mobile)
+  :global(.tui-dialog-footer) > .live-player-h5-exit-dialog-action:global(.tui-button) {
+  color: var(--uikit-text-color-primary);
+
+  &.is-danger {
+    color: var(--uikit-text-color-error);
+  }
+}
+
+@keyframes live-player-h5-dots {
+  0% { content: ''; }
+  25% { content: '.'; }
+  50% { content: '..'; }
+  75% { content: '...'; }
+}

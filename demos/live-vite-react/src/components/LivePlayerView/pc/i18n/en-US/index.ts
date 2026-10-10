@@ -14,4 +14,10 @@ export const resource = {
   'live_player_view.your_camera_permission_disabled_by_host': 'Your camera permission has been disabled by the host',
   'live_player_view.your_microphone_permission_restored_by_host': 'The host has restored your microphone permission. Please turn on the microphone manually.',
   'live_player_view.your_camera_permission_restored_by_host': 'The host has restored your camera permission. Please turn on the camera manually.',
+  'live_player_view.exit_live_dialog_title': 'Exit Live',
+  'live_player_view.exit_live_co_guest_tip': 'You are currently co-guesting with other streamers. Would you like to [End Co-guest] or [Exit Live] ?',
+  'live_player_view.cancel': 'Cancel',
+  'live_player_view.end_co_guest': 'End Co-guest',
+  'live_player_view.exit_live': 'Exit Live',
+  'live_player_view.failed_to_leave_seat': 'Failed to leave seat',
 };

@@ -1,25 +1,59 @@
 import type React from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { IconChevronLeft, IconUser, useUIKit, Button, Toast } from '@tencentcloud/uikit-base-component-react';
-import { useNavigate } from 'react-router-dom';
-import { Avatar, LiveView, LiveGift, LiveListEvent, LiveSeatEvent, BarrageList, BarrageInput, LiveAudienceList, useLiveListState, useLiveAudienceState, useLiveSeatState, useLoginState } from 'tuikit-atomicx-react';
-import LiveEndedIcon from '../../assets/live-ended.svg';
-import styles from './LivePlayerView.module.scss';
+import TUIRoomEngine from '@tencentcloud/tuiroom-engine-js';
+import { Dialog, IconChevronLeft, IconUser, useUIKit, Button, Toast } from '@tencentcloud/uikit-base-component-react';
+import { Avatar, LiveView, LiveGift, LiveListEvent, LiveSeatEvent, BarrageList, BarrageInput, LiveAudienceList, useCoGuestState, useDeviceState, useLiveListState, useLiveAudienceState, useLiveSeatState, useLoginState, useRoomEngine } from 'tuikit-atomicx-react';
+import LiveEndedIcon from '@/assets/live-ended.svg';
+import { initRoomEngineLanguage } from '@/utils';
+import { SeatApplicationButton } from '../../SeatApplication';
+import type { LivePlayerViewProps } from '../types';
+import styles from './LivePlayerViewPC.module.scss';
 
-interface LivePlayerViewProps {
+interface LivePlayerViewPCProps extends LivePlayerViewProps {
   className?: string;
-  /** When true, displays the "live ended" overlay immediately (e.g. when
-   *  joinLive fails because the room no longer exists). */
-  joinFailed?: boolean;
 }
 
-const LivePlayerView: React.FC<LivePlayerViewProps> = ({ className, joinFailed }) => {
-  const { t } = useUIKit();
-  const navigate = useNavigate();
-  const { currentLive, leaveLive, subscribeEvent, unsubscribeEvent } = useLiveListState();
+const LivePlayerViewPC: React.FC<LivePlayerViewPCProps> = ({ className, liveId, onLeaveLive }) => {
+  const { t, language } = useUIKit();
+  const { currentLive, joinLive, leaveLive, subscribeEvent, unsubscribeEvent } = useLiveListState();
   const { audienceList, audienceCount } = useLiveAudienceState();
   const { loginUserInfo } = useLoginState();
+  const roomEngine = useRoomEngine();
+  const isJoiningRef = useRef(false);
+  const [joinFailed, setJoinFailed] = useState(false);
   const [liveEndedOverlayVisible, setLiveEndedOverlayVisible] = useState(false);
+
+  const handleJoinLive = useCallback(async (targetLiveId: string) => {
+    if (isJoiningRef.current) {
+      return;
+    }
+    isJoiningRef.current = true;
+    try {
+      await initRoomEngineLanguage(language);
+      await joinLive({ liveId: targetLiveId });
+    } catch (error) {
+      // Room doesn't exist or join failed — show the ended overlay so the
+      // user sees the same UI as when the host dismisses the room mid-stream.
+      console.error('[LivePlayerViewPC] Failed to join live room:', error);
+      isJoiningRef.current = false;
+      setJoinFailed(true);
+    }
+  }, [joinLive, language]);
+
+  useEffect(() => {
+    if (!liveId) {
+      setJoinFailed(true);
+      return;
+    }
+
+    if (roomEngine.instance) {
+      handleJoinLive(liveId);
+    } else {
+      TUIRoomEngine.once('ready', () => {
+        handleJoinLive(liveId);
+      });
+    }
+  }, [liveId, handleJoinLive, roomEngine.instance]);
 
 
   // Audience-side default playback quality is driven entirely by
@@ -101,7 +135,7 @@ const LivePlayerView: React.FC<LivePlayerViewProps> = ({ className, joinFailed }
     setLiveEndedOverlayVisible(true);
   }, []);
 
-  // Also show the ended overlay if the parent indicates joinLive failed
+  // Also show the ended overlay if joinLive failed
   // (room no longer exists on page refresh).
   useEffect(() => {
     if (joinFailed) {
@@ -109,10 +143,23 @@ const LivePlayerView: React.FC<LivePlayerViewProps> = ({ className, joinFailed }
     }
   }, [joinFailed]);
 
-  const handleLeaveLive = useCallback(async () => {
+  // ── Exit-while-co-guesting confirmation (aligned with the Vue3 demo's
+  // `exitLiveDialog`): when the audience member is on a seat, leaving the
+  // live room requires an explicit choice between ending the co-guest
+  // connection first or exiting the room outright.
+  const { connected: coGuestConnected } = useCoGuestState();
+  const { leaveSeat } = useLiveSeatState();
+  const { closeLocalCamera, closeLocalMicrophone } = useDeviceState();
+  const isUserOnSeat = useMemo(
+    () => coGuestConnected.some(user => user.userId === loginUserInfo?.userId),
+    [coGuestConnected, loginUserInfo?.userId],
+  );
+  const [exitLiveDialogVisible, setExitLiveDialogVisible] = useState(false);
+
+  const performLeaveLive = useCallback(async () => {
     // Wait for `leaveLive()` to finish BEFORE navigating away.
     //
-    // Why: `navigate('/live-list')` synchronously unmounts this view
+    // Why: navigating away in `onLeaveLive` synchronously unmounts this view
     // (including the inner <LiveView />). If we navigate first, React
     // tears down the player while RoomEngine's leave state machine is
     // still in flight - listeners that the leave flow depends on get
@@ -133,9 +180,40 @@ const LivePlayerView: React.FC<LivePlayerViewProps> = ({ className, joinFailed }
     } catch (error) {
       console.error('Failed to leave live:', error);
     } finally {
-      navigate('/live-list');
+      onLeaveLive();
     }
-  }, [isMessageMuted, leaveLive, navigate]);
+  }, [isMessageMuted, leaveLive, onLeaveLive]);
+
+  const handleLeaveLive = useCallback(() => {
+    if (isUserOnSeat) {
+      setExitLiveDialogVisible(true);
+      return;
+    }
+    void performLeaveLive();
+  }, [isUserOnSeat, performLeaveLive]);
+
+  // "End Co-guest": leave the seat and release local capture devices, then
+  // stay in the room as a normal audience member (aligned with Vue3's
+  // `handleEndCoGuest` -> `confirmLeaveSeat`).
+  const handleEndCoGuest = useCallback(async () => {
+    setExitLiveDialogVisible(false);
+    try {
+      await leaveSeat();
+      try {
+        await closeLocalCamera();
+      } catch (error) {
+        console.warn('Failed to close local camera after end co-guest:', error);
+      }
+      try {
+        await closeLocalMicrophone();
+      } catch (error) {
+        console.warn('Failed to close local microphone after end co-guest:', error);
+      }
+    } catch (error) {
+      console.error('Failed to leave seat:', error);
+      Toast.error({ message: t('live_player_view.failed_to_leave_seat') });
+    }
+  }, [leaveSeat, closeLocalCamera, closeLocalMicrophone, t]);
 
   // Setup event listeners.
   // Note: autoplay-failed handling is now built into <LiveView> — no need to
@@ -200,6 +278,14 @@ const LivePlayerView: React.FC<LivePlayerViewProps> = ({ className, joinFailed }
         </div>
         <div className={`${styles.livePlayerView__giftContainer} ${liveEndedOverlayVisible ? styles.disabled : ''}`}>
           <LiveGift />
+          {/* Audience-side seat application entry (co-guesting), placed to the
+              right of the gift bar's "More" entry (mirrors the Vue3 player
+              bottom tools row). Hidden while the live has ended. */}
+          {!liveEndedOverlayVisible && (
+            <div className={styles.livePlayerView__seatApplication}>
+              <SeatApplicationButton />
+            </div>
+          )}
         </div>
       </div>
       <div className={styles.livePlayerView__right}>
@@ -232,8 +318,37 @@ const LivePlayerView: React.FC<LivePlayerViewProps> = ({ className, joinFailed }
           </div>
         </div>
       </div>
+
+      {/* Exit-while-co-guesting confirmation (aligned with the Vue3 demo's
+          `exitLiveDialog`): body holds the tip copy; the three actions go
+          into the dialog footer (Vue3's `#footer` slot with
+          `.action-buttons { display:flex; gap:10px }`). Button colors match
+          Vue3: gray cancel, red "End Co-guest", primary red "Exit Live". */}
+      <Dialog
+        visible={exitLiveDialogVisible}
+        title={t('live_player_view.exit_live_dialog_title')}
+        onClose={() => setExitLiveDialogVisible(false)}
+        showConfirm={false}
+        showCancel={false}
+        width={420}
+        footer={(
+          <div className={styles.livePlayerView__exitActions}>
+            <Button color="gray" onClick={() => setExitLiveDialogVisible(false)}>
+              {t('live_player_view.cancel')}
+            </Button>
+            <Button color="red" onClick={() => void handleEndCoGuest()}>
+              {t('live_player_view.end_co_guest')}
+            </Button>
+            <Button type="primary" color="red" onClick={() => void performLeaveLive()}>
+              {t('live_player_view.exit_live')}
+            </Button>
+          </div>
+        )}
+      >
+        <p className={styles.livePlayerView__exitTip}>{t('live_player_view.exit_live_co_guest_tip')}</p>
+      </Dialog>
     </div>
   );
 };
 
-export default LivePlayerView;
+export { LivePlayerViewPC };

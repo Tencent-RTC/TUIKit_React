@@ -1,0 +1,44 @@
+.fullscreen-overlay-h5 {
+  position: absolute;
+  inset: 0;
+  color: rgba(255, 255, 255, 0.9);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.fullscreen-overlay-h5-barrage {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  width: 40%;
+  height: 35%;
+  overflow: hidden;
+}
+
+.fullscreen-overlay-h5-controls {
+  transition: opacity 0.2s ease;
+
+  &.is-hidden {
+    visibility: hidden;
+    opacity: 0;
+  }
+}
+
+.fullscreen-overlay-h5-back {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+}
+
+.fullscreen-overlay-h5-toolbar {
+  position: absolute;
+  right: 20px;
+  bottom: 16px;
+}

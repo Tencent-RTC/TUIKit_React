@@ -1,0 +1,277 @@
+// CoGuestButton (host-side entry) styles, ported from the Vue3 CoGuestButton
+// + the package's CoGuestPanel scoped SCSS.
+
+// Host-side co-guest button, aligned 1:1 with the Vue3 demo's
+// CoGuestButton.vue scoped SCSS. Token mapping (Vue3 → react base):
+//   --text-color-primary → --uikit-text-color-primary
+//   --text-color-error   → --uikit-text-color-error
+//   --bg-color-mask      → --uikit-bg-color-mask
+//   --text-color-link    → --uikit-text-color-link
+//   --text-color-tertiary → --uikit-text-color-tertiary
+.coGuestButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 56px;
+  width: auto;
+  height: 56px;
+  cursor: pointer;
+  color: var(--uikit-text-color-primary, #fff);
+  border-radius: 12px;
+  position: relative;
+
+  .unreadCount {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: var(--uikit-text-color-error, #f04a4a);
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+  }
+
+  // icon-size-24 mixin equivalent; transparent background so the container
+  // color shows through (Vue3 `.custom-icon { background: transparent }`).
+  .customIcon {
+    width: 24px;
+    height: 24px;
+    background: transparent;
+  }
+
+  // text-size-12 mixin equivalent (12px / weight 400).
+  .customText {
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--uikit-text-color-primary, #fff);
+  }
+
+  &:not(.disabled):hover {
+    box-shadow: 0 0 10px 0 var(--uikit-bg-color-mask, rgba(0, 0, 0, 0.5));
+
+    .customIcon,
+    .customText {
+      color: var(--uikit-text-color-link, #4c8bf5);
+    }
+  }
+
+  &.disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+    color: var(--uikit-text-color-tertiary, rgba(255, 255, 255, 0.4));
+
+    .customIcon {
+      cursor: not-allowed;
+    }
+
+    .customText {
+      color: var(--uikit-text-color-tertiary, rgba(255, 255, 255, 0.4));
+    }
+  }
+}
+
+// Fixed panel height, aligned with the Vue3 demo's `.co-guest-panel`
+// (height: 560px). Must win over the panel's own `height: 100%` — since the
+// dialog body has no fixed height, `100%` resolves to auto and the panel
+// would collapse to its content height. `!important` makes the override
+// deterministic regardless of CSS-module chunk load order.
+.coGuestPanel {
+  height: 560px !important;
+  max-height: 80vh !important;
+}
+
+// ── Panel ───────────────────────────────────────────────────────────────────
+.panelContent {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 200px;
+  max-height: 80vh;
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+}
+
+.tabs {
+  display: flex;
+  gap: 24px;
+  flex-grow: 1;
+
+  .tabItem {
+    background: none;
+    border: none;
+    color: var(--uikit-text-color-secondary, rgba(255, 255, 255, 0.6));
+    font-size: 16px;
+    padding: 12px 0;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.3s ease;
+    user-select: none;
+
+    &Active,
+    &:global(.tabItemActive) {
+      // placeholder, see .tabItemActive below
+    }
+  }
+}
+
+.tabItemActive {
+  color: var(--uikit-text-color-link, #4c8bf5);
+  font-weight: 500;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background-color: var(--uikit-text-color-link, #4c8bf5);
+    border-radius: 1.5px;
+  }
+}
+
+.panelBody {
+  margin-top: 12px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #414756;
+    border-radius: 2px;
+  }
+}
+
+.applicationsContent,
+.invitationsContent {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.userListContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.userListTitle {
+  display: flex;
+  align-items: center;
+  color: var(--uikit-text-color-secondary, rgba(255, 255, 255, 0.6));
+  font-size: 14px;
+  font-weight: 400;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.userList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.userItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 50px;
+  box-sizing: border-box;
+}
+
+.userItemLeft {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.userItemRight {
+  flex: 1;
+  display: flex;
+  height: 100%;
+  align-items: center;
+  border-bottom: 1px solid var(--uikit-stroke-color-secondary, rgba(255, 255, 255, 0.12));
+}
+
+.userInfo {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.userName {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--uikit-text-color-primary, #fff);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 200px;
+}
+
+.isMe {
+  color: var(--uikit-text-color-secondary, rgba(255, 255, 255, 0.6));
+}
+
+.userActions {
+  display: flex;
+  gap: 6px;
+}
+
+// Plain buttons for panel rows (kept as native <button> so the panel does
+// not depend on the base Button sizing inside dense list rows).
+.actionButton {
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--uikit-stroke-color-module, rgba(255, 255, 255, 0.2));
+  background: transparent;
+  color: var(--uikit-text-color-primary, #fff);
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background: var(--uikit-list-color-hover, rgba(255, 255, 255, 0.08));
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.actionButtonDanger {
+  color: var(--uikit-text-color-error, #f04a4a);
+  border-color: var(--uikit-text-color-error, #f04a4a);
+}
+
+.actionButtonGray {
+  color: var(--uikit-text-color-secondary, rgba(255, 255, 255, 0.6));
+}
+
+.emptyState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  flex: 1;
+  color: var(--uikit-text-color-secondary, rgba(255, 255, 255, 0.6));
+  min-height: 60px;
+}

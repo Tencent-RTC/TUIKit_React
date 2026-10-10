@@ -23,6 +23,7 @@ import {
   LiveScenePanel,
   StreamMixer,
   useBarrageState,
+  useCoGuestState,
   useDeviceState,
   useLiveAudienceState,
   useLiveListState,
@@ -31,12 +32,11 @@ import {
 } from 'tuikit-atomicx-react';
 import type { Barrage } from 'tuikit-atomicx-react';
 import { LiveHeader } from '@/components/LiveHeader';
-// NOTE: `LayoutSwitch` is intentionally NOT imported here. React 端目前不
-// 支持连麦 / 连线，因此布局切换入口暂无业务场景，先从底部栏隐藏。
-// 组件实现仍保留在 `@/components/LivePusherControls/LayoutSwitch.tsx`
-// 以及对应的 `index.ts` 导出里，待后续支持连麦能力后，直接在下面的
-// `main-center-bottom-tools` 里恢复 `<LayoutSwitch />` 即可。
 import {
+  CoGuestButton,
+} from '@/components/CoGuestButton';
+import {
+  LayoutSwitch,
   MicVolumeSetting,
   OrientationSwitch,
   SettingButton,
@@ -64,6 +64,9 @@ const LivePusher: React.FC = () => {
     subscribeEvent,
     unsubscribeEvent,
   } = useLiveListState();
+  // Connected co-guests — drives the end-live confirmation copy
+  // (aligned with the Vue3 demo's `coGuestConnected`).
+  const { connected: coGuestConnected } = useCoGuestState();
   // Custom-message subscription channel — used to surface server-side
   // moderation tips while the host is on-air (see effect below).
   const {
@@ -219,9 +222,14 @@ const LivePusher: React.FC = () => {
     if (loading || !isInLive) {
       return;
     }
+    // Aligned with the Vue3 demo: while co-guests are connected the
+    // confirmation copy calls out the co-guesting state explicitly.
+    const hasCoGuest = coGuestConnected.length > 1;
     MessageBox.alert({
       title: t('live_pusher.end_live_title'),
-      content: t('live_pusher.leave_confirm_content'),
+      content: hasCoGuest
+        ? t('live_pusher.leave_confirm_co_guest_content')
+        : t('live_pusher.leave_confirm_content'),
       cancelText: t('live_pusher.cancel'),
       confirmText: t('live_pusher.end_live_button'),
       showClose: false,
@@ -233,7 +241,7 @@ const LivePusher: React.FC = () => {
         void handleEndLive();
       },
     });
-  }, [handleEndLive, isInLive, loading, t]);
+  }, [coGuestConnected.length, handleEndLive, isInLive, loading, t]);
 
   const handleLeave = useCallback(() => {
     if (!isInLive) {
@@ -494,11 +502,12 @@ const LivePusher: React.FC = () => {
                 <SpeakerVolumeSetting />
                 <div className={styles['main-center-bottom-tools']}>
                   <OrientationSwitch />
-                  {/*
-                    LayoutSwitch 暂时隐藏：React 端目前不支持连麦/连线，
-                    放出布局切换入口没有对应的实际功能。组件实现仍保留，
-                    待后续支持连麦能力后直接恢复 <LayoutSwitch /> 即可。
-                  */}
+                  {/* Audience seat layout switch (grid / 1v6 / landscape),
+                      gated while co-hosting — aligned with the Vue3 demo. */}
+                  <LayoutSwitch />
+                  {/* Host-side co-guest entry: pending applications badge +
+                      management panel (accept / reject / kick off seat). */}
+                  <CoGuestButton />
                   <SettingButton />
                 </div>
               </div>

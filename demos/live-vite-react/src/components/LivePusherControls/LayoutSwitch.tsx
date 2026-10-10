@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { TUIErrorCode } from '@tencentcloud/tuiroom-engine-js';
 import {
   Dialog,
   IconLayoutTemplate,
@@ -6,7 +7,7 @@ import {
   useUIKit,
 } from '@tencentcloud/uikit-base-component-react';
 import classNames from 'classnames';
-import { useLiveListState, useLiveSeatState } from 'tuikit-atomicx-react';
+import { CoHostStatus, useCoHostState, useLiveListState, useLiveSeatState } from 'tuikit-atomicx-react';
 import PusherControlButton from './PusherControlButton';
 import { TUISeatLayoutTemplate } from './types';
 import {
@@ -24,10 +25,21 @@ export default function LayoutSwitch() {
   const { t } = useUIKit();
   const { currentLive, updateLiveInfo } = useLiveListState();
   const { seatList } = useLiveSeatState();
+  const { coHostStatus } = useCoHostState();
   const [visible, setVisible] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<number | null>(
     currentLive?.layoutTemplate ?? null,
   );
+  // Layout switching is unavailable while co-hosting with other hosts —
+  // aligned with the Vue3 demo.
+  const disabled = coHostStatus === CoHostStatus.Connected;
+
+  // Close the dialog if co-hosting starts while it is open.
+  useEffect(() => {
+    if (disabled) {
+      setVisible(false);
+    }
+  }, [disabled]);
 
   const portraitLayoutOptions = useMemo(() => [
     {
@@ -130,8 +142,17 @@ export default function LayoutSwitch() {
     try {
       await updateLiveInfo({ layoutTemplate: selectedTemplate });
       setVisible(false);
-    } catch {
-      Toast.error({ message: t('live_pusher.layout_switch_failed') });
+    } catch (error) {
+      // Aligned with the Vue3 demo: frequency-limited switches get a
+      // dedicated "try later" message.
+      const errorCode = typeof error === 'object' && error !== null && 'code' in error
+        ? Number(error.code)
+        : undefined;
+      Toast.error({
+        message: errorCode === TUIErrorCode.ERR_FREQ_LIMIT
+          ? t('live_pusher.operation_too_frequent')
+          : t('live_pusher.layout_switch_failed'),
+      });
     }
   };
 
@@ -145,7 +166,14 @@ export default function LayoutSwitch() {
       <PusherControlButton
         icon={<IconLayoutTemplate size="24" style={{ fill: 'none' }} />}
         label={t('live_pusher.layout_settings')}
-        onClick={() => setVisible(true)}
+        disabled={disabled}
+        onClick={() => {
+          if (disabled) {
+            Toast.error({ message: t('live_pusher.layout_switch_disabled_co_hosting') });
+            return;
+          }
+          setVisible(true);
+        }}
       />
       <Dialog
         visible={visible}
