@@ -1,0 +1,103 @@
+@mixin side-panel {
+  align-self: flex-end;
+  width: 50%;
+  height: 100% !important;
+  max-height: 100%;
+  border-top-right-radius: 0;
+  border-bottom-left-radius: 12px;
+  transform: translateX(100%);
+}
+
+.bottom-sheet-mask {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background: var(--uikit-bg-color-mask, rgba(0, 0, 0, 0.5));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
+
+  &.is-active {
+    opacity: 1;
+
+    .bottom-sheet-panel {
+      transform: translate(0, 0);
+    }
+  }
+}
+
+.bottom-sheet-panel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-height: 90%;
+  box-sizing: border-box;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  overflow: hidden;
+  background: var(--uikit-bg-color-dialog, #1f2024);
+  color: var(--uikit-text-color-primary, rgba(255, 255, 255, 0.9));
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  @media screen and (orientation: landscape) {
+    &.is-side-in-landscape {
+      @include side-panel;
+    }
+  }
+
+  // A rotated fullscreen frame is landscape while the media query still reports portrait.
+  &.is-side-in-landscape-frame {
+    @include side-panel;
+  }
+}
+
+.bottom-sheet-title {
+  flex-shrink: 0;
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  text-align: center;
+}
+
+.bottom-sheet-header {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  height: 48px;
+}
+
+.bottom-sheet-back {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  cursor: pointer;
+}
+
+.bottom-sheet-header-title {
+  flex: 1;
+  min-width: 0;
+  // Offsets the back arrow so the title stays centered.
+  margin-right: 48px;
+  overflow: hidden;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 48px;
+  text-align: center;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.bottom-sheet-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}

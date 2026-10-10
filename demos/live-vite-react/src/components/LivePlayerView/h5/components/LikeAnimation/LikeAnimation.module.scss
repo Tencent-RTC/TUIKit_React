@@ -1,0 +1,18 @@
+.like-animation {
+  position: fixed;
+  right: 0;
+  bottom: 60px;
+  width: 200px;
+  height: 350px;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 100;
+}
+
+.like-heart {
+  position: absolute;
+  top: 0;
+  left: 0;
+  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.6));
+  will-change: transform, opacity;
+}

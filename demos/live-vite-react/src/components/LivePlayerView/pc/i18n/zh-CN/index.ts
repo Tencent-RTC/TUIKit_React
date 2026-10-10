@@ -14,4 +14,10 @@ export const resource = {
   'live_player_view.your_camera_permission_disabled_by_host': '主播已关闭您的摄像头权限',
   'live_player_view.your_microphone_permission_restored_by_host': '主播已恢复您的麦克风权限，请手动开启麦克风',
   'live_player_view.your_camera_permission_restored_by_host': '主播已恢复您的摄像头权限，请手动开启摄像头',
+  'live_player_view.exit_live_dialog_title': '退出直播间',
+  'live_player_view.exit_live_co_guest_tip': '当前处于连麦状态，是否需要「断开连麦」或「退出直播间」',
+  'live_player_view.cancel': '取消',
+  'live_player_view.end_co_guest': '断开连麦',
+  'live_player_view.exit_live': '退出直播间',
+  'live_player_view.failed_to_leave_seat': '断开连麦失败',
 };

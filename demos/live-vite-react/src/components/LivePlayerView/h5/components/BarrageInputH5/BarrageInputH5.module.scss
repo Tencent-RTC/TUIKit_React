@@ -1,0 +1,107 @@
+$send-button-width: 64px;
+$send-button-gap: 12px;
+
+.barrage-input-h5 {
+  display: flex;
+  align-items: center;
+
+  // Stack the editor above the full-viewport mask.
+  > *:not(.barrage-input-h5-mask) {
+    position: relative;
+    z-index: 2;
+  }
+
+  // Reserve room for the send button rendered outside the pill.
+  &.has-send-button {
+    margin-right: $send-button-width + $send-button-gap;
+  }
+}
+
+.barrage-input-h5-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  background: transparent;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.barrage-input-h5-editor {
+  width: auto;
+
+  :global(.uikit-barrageTextEditor__suffix) {
+    position: absolute;
+    top: 50%;
+    left: calc(100% + #{$send-button-gap});
+    transform: translateY(-50%);
+  }
+
+  // The pill leaves a 30px content box; the default padding overflows it by a few pixels,
+  // so typing scrolls the line upward. 2px paragraph padding + 26px line fill it exactly.
+  :global(.tiptap.ProseMirror) {
+    padding: 0;
+    line-height: 26px;
+  }
+
+  // The narrow pill would otherwise wrap the placeholder and show only its first word.
+  :global(.ProseMirror p.is-editor-empty:first-child) {
+    position: relative;
+    width: 100%;
+  }
+
+  :global(.ProseMirror p.is-editor-empty:first-child::before) {
+    position: absolute;
+    right: 0;
+    left: 0;
+    float: none;
+    height: auto;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  :global(button) {
+    height: 32px;
+    min-width: $send-button-width;
+    padding: 0 16px;
+  }
+}
+
+// The emoji panel is portaled out of this component and spans 100vw on phones.
+// The popup keeps a 5px viewport inset when it shifts, so 7px side margins leave 12px on each edge.
+// A grid spreads the leftover width between columns; flex wrap would pile it on the right.
+@media screen and (max-width: 768px) {
+  :global(.uikit-emojiPicker__popupReset) :global(.uikit-emojiPicker__list) {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 32px);
+    justify-content: space-between;
+    align-content: start;
+    width: calc(100vw - 24px);
+    margin: 0 7px 10px;
+  }
+}
+
+.barrage-input-h5-placeholder {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 36px;
+  padding: 2px 12px;
+  border-radius: 100px;
+  border: 1px solid var(--uikit-stroke-color-primary);
+  background-color: var(--uikit-bg-color-operate);
+  color: var(--uikit-text-color-secondary);
+  font-size: 14px;
+  line-height: 1.5;
+  user-select: none;
+
+  span {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+}
+
+.barrage-input-h5-placeholder-emoji {
+  flex-shrink: 0;
+  margin-right: 12px;
+}

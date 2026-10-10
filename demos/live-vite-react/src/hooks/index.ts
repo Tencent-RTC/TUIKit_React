@@ -6,3 +6,4 @@ addI18n('en-US', { translation: enResource });
 addI18n('zh-CN', { translation: zhResource });
 
 export { useGlobalEventDialogs } from './useGlobalEventDialogs';
+export { useAutoLogin } from './useAutoLogin';

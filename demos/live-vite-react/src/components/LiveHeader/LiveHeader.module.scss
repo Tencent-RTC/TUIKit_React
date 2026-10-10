@@ -54,6 +54,11 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+
+      // Keep the logout button on screen for long names on phones.
+      @media screen and (max-width: 480px) {
+        max-width: 120px;
+      }
     }
 
     :global(.tui-button) {
